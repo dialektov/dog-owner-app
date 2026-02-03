@@ -1,0 +1,50 @@
+{
+  "expo": {
+    "name": "DogPaw — Помощник владельца собаки",
+    "slug": "dog-owner-app",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#FF9F43"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.dogowner.app",
+      "infoPlist": {
+        "NSCameraUsageDescription": "Приложению нужен доступ к камере для сканирования QR-кодов на ошейниках собак",
+        "NSLocationWhenInUseUsageDescription": "Приложению нужна геолокация для трекера прогулок и умной карты",
+        "NSPhotoLibraryUsageDescription": "Приложению нужен доступ к фотографиям для карточки питомца"
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#FF9F43"
+      },
+      "package": "com.dogowner.app",
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION",
+        "CAMERA"
+      ]
+    },
+    "plugins": [
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Приложению нужен доступ к камере для сканирования QR-кодов"
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Приложению нужна геолокация для трекера прогулок"
+        }
+      ]
+    ]
+  }
+}
