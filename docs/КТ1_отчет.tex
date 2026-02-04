@@ -27,6 +27,10 @@
 \usepackage{booktabs}
 \usepackage{amsmath}
 \usepackage{multirow}
+\usepackage{tikz}
+\usetikzlibrary{positioning,shapes.geometric,arrows.meta,calc}
+\usepackage{longtable}
+\usepackage{pdflscape}
 
 \titleformat{\section}{\normalfont\bfseries}{\thesection}{1em}{}
 \titleformat{\subsection}{\normalfont\bfseries}{\thesubsection}{1em}{}
@@ -129,6 +133,59 @@
 
 Коммерческие приложения с частичным пересечением функциональности (BringFido для поиска мест, дружественных к собакам) ориентированы на зарубежный рынок и не предлагают комплексного решения для российских пользователей. Отсутствие единого продукта, сочетающего QR-идентификацию для безопасности, трекинг прогулок, карту мест с отзывами и умную карту с геолокацией пользователей, обосновывает необходимость разработки DogPaw как специализированного решения.
 
+\subsubsection{Матрица функций (анализ конкурентов)}
+
+Ниже приведена расширенная сравнительная матрица функций по ключевым конкурентам относительно ТЗ DogPaw. Источник: анализ конкурентов от 23.12.2025. Легенда: «+» --- есть; «$\pm$» --- частично или в иной форме; «--» --- отсутствует. Сокращения колонок: Проф. = профиль питомца; QR = QR-адресник/скан; Прог. = трекер прогулок; Корм. = кормление (калькулятор/напоминания); Карта = карта мест; Отз. = оценки/отзывы; Друз. = друзья/комьюнити; Чаты = чаты; Лента = лента фото/видео; Live = realtime карта людей/статусы; База = база знаний; L\&F = Lost\&Found; Серв. = сервисы/маркетплейс.
+
+\begin{landscape}
+\centering
+\small
+\setlength\LTleft{0pt}
+\setlength\LTright{0pt}
+\begin{longtable}{@{}p{2.2cm}p{2.1cm}cccccccccccccc@{}}
+\caption{Матрица функций: DogPaw и конкуренты (приложение для владельцев собак)} \label{tab:analogs} \\
+\toprule
+\textbf{Приложение} & \textbf{Катег.} & Проф. & QR & Прог. & Корм. & Карта & Отз. & Друз. & Чаты & Лента & Live & База & L\&F & Серв. \\
+\midrule
+\endfirsthead
+
+\multicolumn{15}{c}{\tablename\ \thetable\ --- продолжение} \\
+\toprule
+\textbf{Приложение} & \textbf{Катег.} & Проф. & QR & Прог. & Корм. & Карта & Отз. & Друз. & Чаты & Лента & Live & База & L\&F & Серв. \\
+\midrule
+\endhead
+
+\bottomrule
+\endfoot
+
+Ваше решение (по ТЗ) & all-in-one & + & + & + & + & + & + & + & + & + & + & + & $\pm$ & -- \\
+DogPack & карта, комьюнити, L\&F & $\pm$ & -- & -- & -- & + & $\pm$ & + & + & + & $\pm$ & -- & + & + \\
+Pawscout & безопасность, комьюнити & + & $\pm$ & + & -- & + & -- & + & $\pm$ & $\pm$ & $\pm$ & -- & + & -- \\
+BringFido & dog-friendly каталог & -- & -- & -- & -- & + & + & -- & -- & -- & -- & -- & -- & -- \\
+Sniffspot & бронирование площадок & -- & -- & -- & -- & + & + & -- & -- & -- & -- & -- & -- & + \\
+PawBoost & lost\&found & -- & -- & -- & -- & -- & -- & $\pm$ & -- & -- & -- & -- & + & $\pm$ \\
+PetHub & QR ID, L\&F сервис & + & + & -- & -- & -- & -- & -- & -- & -- & -- & $\pm$ & + & $\pm$ \\
+11pets & здоровье, дневник & + & -- & -- & $\pm$ & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
+DogLog & уход, ремайндеры & + & -- & -- & $\pm$ & -- & -- & $\pm$ & $\pm$ & $\pm$ & -- & -- & -- & -- \\
+PetDesk & ремайндеры, клиники & + & -- & -- & $\pm$ & -- & -- & -- & $\pm$ & -- & -- & -- & -- & -- \\
+Wag! & маркетплейс выгул & -- & -- & $\pm$ & -- & -- & + & -- & + & -- & -- & -- & -- & + \\
+Rover & маркетплейс ситтеры & -- & -- & $\pm$ & -- & -- & + & -- & + & -- & -- & -- & -- & + \\
+Fi (smart collar) & GPS ошейник, health & $\pm$ & -- & $\pm$ & -- & -- & -- & -- & $\pm$ & -- & $\pm$ & -- & $\pm$ & -- \\
+Tractive & GPS трекер, здоровье & $\pm$ & -- & $\pm$ & -- & -- & -- & -- & -- & -- & -- & $\pm$ & -- & -- \\
+Whistle & GPS трекер (закрыт) & $\pm$ & -- & $\pm$ & -- & -- & -- & -- & -- & -- & -- & $\pm$ & -- & -- \\
+WoofTrax & трекер + благотворит. & -- & -- & + & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
+Amiko & трекер прогулок & -- & -- & + & -- & -- & -- & $\pm$ & -- & $\pm$ & -- & -- & -- & -- \\
+Pet First Aid & энциклопедия, помощь & + & -- & -- & -- & $\pm$ & -- & -- & -- & -- & -- & + & -- & -- \\
+Puppr & обучение & -- & -- & -- & $\pm$ & -- & -- & -- & $\pm$ & $\pm$ & -- & + & -- & $\pm$ \\
+Pupford & обучение, контент & + & -- & -- & -- & -- & -- & -- & -- & -- & -- & + & -- & $\pm$ \\
+Dogo & обучение, трекинг & -- & -- & $\pm$ & $\pm$ & -- & -- & -- & -- & -- & + & -- & -- & -- \\
+Petzbe & соцсеть питомцев & + & -- & -- & -- & -- & -- & $\pm$ & -- & + & -- & -- & -- & -- \\
+\bottomrule
+\end{longtable}
+\end{landscape}
+
+Из матрицы видно, что ни один аналог не покрывает полный набор функций DogPaw (все столбцы «+» или «$\pm$» кроме Серв.): комбинация профиля питомца, QR-адресника, трекера прогулок, калькулятора кормления, карты мест с отзывами, друзей/чатов/ленты, умной карты (Live) и базы знаний реализована только в целевом решении. Ближе всего по охвату --- DogPack и Pawscout, но у них отсутствуют или частичны QR, кормление и Live-карта.
+
 \newpage
 
 \section{Описание программного проекта}
@@ -152,7 +209,35 @@
 
 \subsubsection{Нефункциональные требования}
 
-Реализованы требования к поддержке платформ iOS и Android через кросс-платформенную сборку Expo; обеспечена работа API в формате JSON; настроен CORS для взаимодействия с мобильным клиентом. Аутентификация пользователей планируется к внедрению на последующих этапах.
+К системе предъявляются следующие нефункциональные требования, задающие измеримые характеристики качества и эксплуатации.
+
+\textbf{Производительность:} время отклика API для типовых запросов (GET сущности, список по фильтру) не более 500 мс при нагрузке до 100 одновременных запросов; время первой отрисовки экрана мобильного приложения не более 2 с при типичном соединении.
+
+\textbf{Доступность и отказоустойчивость:} серверный компонент должен обеспечивать доступность не менее 99\,\% в течение расчётного периода работы; при сбое СУБД или перезапуске сервера данные не теряются (персистентное хранилище); предусмотрена возможность восстановления после сбоя без потери целостности данных.
+
+\textbf{Масштабируемость:} архитектура допускает горизонтальное масштабирование серверной части (несколько инстансов за балансировщиком) и замену SQLite на PostgreSQL без изменения контрактов API.
+
+\textbf{Безопасность и конфиденциальность:} передача данных по HTTPS; хранение персональных данных и данных о питомцах в соответствии с требованиями конфиденциальности; аутентификация и авторизация пользователей планируются на следующих этапах (JWT/OAuth).
+
+\textbf{Удобство развёртывания (операционные требования):} серверная часть развёртывается одной исполняемой командой (\texttt{go run .} или бинарник); мобильное приложение собирается через Expo без необходимости настройки нативных сред для базового запуска; документация по запуску и конфигурации предоставлена в репозитории.
+
+\subsubsection{Требования к системе и развёртыванию}
+
+Реализованы требования к поддержке платформ iOS и Android через кросс-платформенную сборку Expo; обеспечена работа API в формате JSON; настроен CORS для взаимодействия с мобильным клиентом; база данных инициализируется при первом запуске (автомиграции GORM). Аутентификация пользователей планируется к внедрению на последующих этапах.
+
+\subsection{Обоснование выбора средств реализации}
+
+Выбор технологий обоснован целями проекта: единая кодовая база для двух платформ, быстрая разработка прототипа, надёжный и простой в развёртывании серверный API.
+
+\textbf{Клиент: React Native и Expo.} React Native позволяет разрабатывать нативное мобильное приложение для iOS и Android на JavaScript/TypeScript с единой кодовой базой, что снижает затраты на поддержку двух приложений. Expo добавляет готовые модули (камера, геолокация, сборка) и упрощает сборку без обязательной настройки Xcode/Android Studio на этапе прототипа. Выбор TypeScript повышает надёжность кода за счёт статической типизации и лучшей поддержки в IDE.
+
+\textbf{Сервер: Go и Gin.} Язык Go обеспечивает высокую производительность, простую компиляцию в один бинарник и встроенную поддержку конкурентности, что подходит для API с потенциальной нагрузкой. Фреймворк Gin даёт минималистичный маршрутизатор и middleware (в том числе CORS), не навязывая тяжёлой архитектуры и позволяя быстро реализовать REST API.
+
+\textbf{Хранение данных: SQLite и GORM.} SQLite не требует отдельного сервера БД и подходит для прототипа и малых развёртываний; один файл базы упрощает бэкапы и перенос. ORM GORM обеспечивает миграции схемы из кода (автомиграции), типобезопасную работу с данными и возможность смены драйвера на PostgreSQL при масштабировании без переписывания бизнес-логики.
+
+\textbf{Карты и геолокация: React Native Maps, Expo Location.} React Native Maps предоставляет нативные карты (Apple Maps / Google Maps) в едином API; Expo Location --- стандартизированный доступ к геолокации с учётом разрешений на обеих платформах. Это минимизирует платформо-специфичный код.
+
+\textbf{Навигация и UI: React Navigation.} Де-факто стандарт для навигации в React Native; поддержка вкладок и стеков, совместимость с Expo и нативным поведением iOS/Android.
 
 \subsection{Реализованная архитектура системы}
 
@@ -162,6 +247,33 @@
 
 Серверный компонент --- REST API на языке Go 1.21 с использованием фреймворка Gin [4] для маршрутизации и обработки HTTP-запросов. Хранение данных организовано с помощью SQLite через ORM GORM [5]. Модели данных включают сущности: User, Pet, Walk, Place, Review, UserLocation, Friendship, FeedPost, Article. Автомиграции GORM создают схемы таблиц при запуске.
 
+\subsubsection{Схема архитектуры}
+
+На рис.~\ref{fig:arch} представлена высокоуровневая архитектура системы. Мобильное приложение (клиент) работает на устройствах пользователя под iOS или Android и взаимодействует с серверным API по протоколу HTTP/HTTPS. Серверный компонент принимает запросы, выполняет бизнес-логику и обращается к базе данных SQLite. Внешние сервисы (карты, геолокация) используются на стороне клиента через нативные API платформ и Expo.
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[
+  node distance=1.2cm and 1.5cm,
+  box/.style={draw, rounded corners, minimum width=2.2cm, minimum height=0.8cm, align=center},
+  server/.style={box, fill=blue!10},
+  client/.style={box, fill=green!10},
+  db/.style={box, fill=orange!15},
+  arrow/.style={-{Stealth[length=2mm]}, thick}
+]
+  \node[client] (client) {Мобильное приложение\\React Native / Expo\\(iOS, Android)};
+  \node[server, right=of client] (api) {REST API\\Go, Gin};
+  \node[db, right=of api] (db) {SQLite\\GORM};
+  \node[above=0.6cm of client, font=\small, gray] (user) {Пользователь};
+  \draw[arrow] (user) -- (client);
+  \draw[arrow] (client) -- node[above, font=\tiny] {HTTP/JSON} (api);
+  \draw[arrow] (api) -- node[above, font=\tiny] {запросы} (db);
+  \draw[arrow] (db) to[bend left=15] node[below, font=\tiny] {результаты} (api);
+\end{tikzpicture}
+\caption{Клиент-серверная архитектура DogPaw}
+\label{fig:arch}
+\end{figure}
+
 \subsubsection{Взаимодействие}
 
 Взаимодействие между клиентом и сервером осуществляется по протоколу HTTP в формате JSON. Базовый URL API настраивается в конфигурации клиента (\texttt{src/api/config.ts}). Клиент отправляет запросы к эндпоинтам \texttt{/api/v1/<ресурс>}; сервер возвращает данные в формате JSON. Реализованы эндпоинты для получения и обновления локации пользователя (\texttt{GET /map/users}, \texttt{PUT /map/me}) для поддержки умной карты. Клиентский API-модуль (\texttt{src/api/client.ts}) инкапсулирует вызовы к серверу.
@@ -169,6 +281,42 @@
 \subsubsection{Формат данных}
 
 Основные сущности и их поля: User (id, email, name, avatar); Pet (id, owner\_id, name, breed, age, weight, photos, allergies, vaccinations, vet\_contacts, qr\_code\_data); Walk (id, pet\_id, distance, duration, calories, route, started\_at, ended\_at); Place (id, name, address, category, latitude, longitude, rating); UserLocation (user\_id, pet\_id, latitude, longitude, status, last\_updated). Категории мест: vet, pet\_shop, groomer, park, cafe. Статусы на умной карте: looking\_for\_company, training, do\_not\_disturb. Идентификаторы генерируются с использованием UUID.
+
+\subsubsection{Структура базы данных}
+
+База данных реализована в SQLite; схема создаётся автомиграциями GORM при старте сервера. Ниже приведены основные таблицы и связи.
+
+\textbf{Пользователи и питомцы.} Таблица \texttt{users}: первичный ключ \texttt{id} (UUID), \texttt{email} (уникальный), \texttt{name}, \texttt{avatar}, \texttt{created\_at}, \texttt{updated\_at}, \texttt{deleted\_at} (soft delete). Таблица \texttt{pets}: \texttt{id} (PK), \texttt{owner\_id} (FK на \texttt{users}), \texttt{name}, \texttt{breed}, \texttt{age}, \texttt{weight}, \texttt{photos} (JSON), \texttt{allergies}, \texttt{vaccinations}, \texttt{vet\_contacts}, \texttt{qr\_code\_data} (уникальный), временные метки.
+
+\textbf{Прогулки и места.} Таблица \texttt{walks}: \texttt{id} (PK), \texttt{pet\_id} (FK на \texttt{pets}), \texttt{distance} (км), \texttt{duration} (мин), \texttt{calories}, \texttt{route} (JSON массив координат), \texttt{started\_at}, \texttt{ended\_at}. Таблица \texttt{places}: \texttt{id} (PK), \texttt{name}, \texttt{address}, \texttt{category} (vet \textbar\ pet\_shop \textbar\ groomer \textbar\ park \textbar\ cafe), \texttt{latitude}, \texttt{longitude}, \texttt{rating}, \texttt{created\_at}. Таблица \texttt{reviews}: \texttt{id} (PK), \texttt{place\_id} (FK), \texttt{user\_id} (FK), \texttt{rating}, \texttt{text}, \texttt{created\_at}.
+
+\textbf{Умная карта и социальный блок.} Таблица \texttt{user\_locations}: \texttt{id} (PK), \texttt{user\_id} (уникальный), \texttt{pet\_id}, \texttt{latitude}, \texttt{longitude}, \texttt{status} (looking\_for\_company \textbar\ training \textbar\ do\_not\_disturb), \texttt{last\_updated}. Таблица \texttt{friendships}: \texttt{id} (PK), \texttt{user\_id}, \texttt{friend\_id}, составной индекс по паре (user\_id, friend\_id). Таблица \texttt{feed\_posts}: \texttt{id} (PK), \texttt{user\_id}, \texttt{pet\_id}, \texttt{text}, \texttt{media\_url}, \texttt{likes}, \texttt{created\_at}. Таблица \texttt{articles}: \texttt{id} (PK), \texttt{title}, \texttt{content}, \texttt{category}, \texttt{author}, \texttt{created\_at}.
+
+Связи: один пользователь --- много питомцев; один питомец --- много прогулок; у места --- много отзывов; у пользователя --- одна текущая запись в \texttt{user\_locations}; дружба задаётся парой в \texttt{friendships}.
+
+В таблице~\ref{tab:db} приведена сводная структура основных таблиц базы данных.
+
+\begin{table}[h]
+\centering
+\caption{Структура таблиц базы данных DogPaw}
+\label{tab:db}
+\small
+\begin{tabular}{lll}
+\toprule
+\textbf{Таблица} & \textbf{Ключевые поля} & \textbf{Назначение} \\
+\midrule
+\texttt{users} & id (PK), email (UNIQ), name, avatar & Пользователи \\
+\texttt{pets} & id (PK), owner\_id (FK), name, breed, qr\_code\_data (UNIQ) & Питомцы \\
+\texttt{walks} & id (PK), pet\_id (FK), distance, duration, calories, route & Прогулки \\
+\texttt{places} & id (PK), name, category, latitude, longitude, rating & Места \\
+\texttt{reviews} & id (PK), place\_id (FK), user\_id (FK), rating, text & Отзывы к местам \\
+\texttt{user\_locations} & id (PK), user\_id (UNIQ), latitude, longitude, status & Умная карта \\
+\texttt{friendships} & id (PK), user\_id, friend\_id & Друзья \\
+\texttt{feed\_posts} & id (PK), user\_id, pet\_id, text, likes & Лента постов \\
+\texttt{articles} & id (PK), title, content, category & База знаний \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \subsection{Реализованные пользовательские сценарии}
 

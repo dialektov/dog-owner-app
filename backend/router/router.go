@@ -25,7 +25,7 @@ func Setup(cfg *config.Config) *gin.Engine {
 		api.PUT("/pets/:id", handlers.UpdatePet)
 
 		// Walks
-		api.GET("/pets/:petId/walks", handlers.GetWalks)
+		api.GET("/pets/:id/walks", handlers.GetWalks)
 		api.POST("/walks", handlers.CreateWalk)
 
 		// Places

@@ -9,7 +9,7 @@ import (
 )
 
 func GetWalks(c *gin.Context) {
-	petID := c.Param("petId")
+	petID := c.Param("id")
 	var walks []models.Walk
 	if err := db.DB.Where("pet_id = ?", petID).Order("started_at DESC").Find(&walks).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

@@ -44,7 +44,8 @@
         {
           "locationWhenInUsePermission": "Приложению нужна геолокация для трекера прогулок"
         }
-      ]
+      ],
+      "expo-asset"
     ]
   }
 }
