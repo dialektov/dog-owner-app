@@ -28,8 +28,11 @@ API: `http://localhost:8080`
 
 ### Мобильное приложение
 
+Проект использует **Expo SDK 54** (совместим с актуальной версией Expo Go на устройстве).
+
 ```bash
 npm install
+npx expo install --fix
 npm start
 ```
 
