@@ -18,6 +18,11 @@ go run .
 - `GET /api/v1/users/:id` — получить пользователя
 - `POST /api/v1/users` — создать пользователя
 
+### Авторизация
+- `POST /api/v1/auth/register` — регистрация (email, name, password)
+- `POST /api/v1/auth/login` — вход (email, password)
+- `GET /api/v1/auth/me` — текущий профиль (Bearer token)
+
 ### Питомцы
 - `GET /api/v1/pets/:id` — получить питомца
 - `GET /api/v1/pets/qr/:qr` — получить питомца по QR-коду
@@ -30,6 +35,7 @@ go run .
 
 ### Места
 - `GET /api/v1/places?category=vet` — список мест
+- `GET /api/v1/places/search?lat=55.75&lng=37.61&radius_km=3&limit=30&save=true` — поиск dog-friendly мест через Яндекс Карты и (опционально) сохранение в БД
 - `GET /api/v1/places/:id` — место с отзывами
 - `POST /api/v1/places` — добавить место
 - `POST /api/v1/places/:id/reviews` — оставить отзыв
@@ -37,6 +43,11 @@ go run .
 ### Умная карта
 - `GET /api/v1/map/users` — локации пользователей
 - `PUT /api/v1/map/me` — обновить свою локацию
+
+### Lost & Found
+- `GET /api/v1/lost?status=active` — список объявлений о пропавших питомцах
+- `POST /api/v1/lost` — создать объявление «потерялся питомец»
+- `PUT /api/v1/lost/:id/found` — отметить питомца найденным
 
 ### Друзья
 - `GET /api/v1/users/:id/friends` — список друзей
@@ -53,6 +64,27 @@ go run .
 ## База данных
 
 По умолчанию используется SQLite (`./data/dogowner.db`). Для PostgreSQL можно заменить драйвер в `db/db.go`.
+
+## Внешние API
+
+Для автопоиска мест по Яндекс Картам задайте переменную окружения:
+
+```bash
+set YANDEX_MAPS_API_KEY=ваш_ключ
+```
+
+Без ключа эндпоинт `GET /api/v1/places/search` вернёт ошибку.
+
+Для авторизации задайте (рекомендуется в production):
+
+```bash
+set JWT_SECRET=очень_сложный_секрет
+```
+
+## Нефункциональные улучшения
+
+- Добавлен простой rate limit middleware: до 120 запросов в минуту на IP (429 при превышении).
+- Для клиентских API-запросов добавлены таймаут и повторная попытка при временных сетевых сбоях.
 
 ## Демо-данные
 

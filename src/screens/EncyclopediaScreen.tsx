@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   View,
   Text,
@@ -6,23 +6,43 @@ import {
   ScrollView,
   TouchableOpacity,
   TextInput,
+  ActivityIndicator,
 } from 'react-native';
+import { api } from '../api/client';
 
 const CATEGORIES = ['Воспитание', 'Уход', 'Здоровье', 'Питание'];
-
-const DEMO_ARTICLES = [
-  { id: '1', title: 'Как приучить щенка к туалету', category: 'Воспитание' },
-  { id: '2', title: 'Уход за шерстью длинношёрстных пород', category: 'Уход' },
-  { id: '3', title: 'Когда делать прививки собаке', category: 'Здоровье' },
-  { id: '4', title: 'Натуральное питание vs корм', category: 'Питание' },
-];
+type Article = { id: string; title: string; category: string; content: string; author?: string };
 
 export default function EncyclopediaScreen() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [search, setSearch] = useState('');
+  const [articles, setArticles] = useState<Article[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
 
-  const filtered = selectedCategory
-    ? DEMO_ARTICLES.filter((a) => a.category === selectedCategory)
-    : DEMO_ARTICLES;
+  const loadArticles = async (category?: string) => {
+    setLoading(true);
+    try {
+      const data = await api.getArticles(category);
+      setArticles(Array.isArray(data) ? (data as Article[]) : []);
+    } catch {
+      setArticles([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadArticles(selectedCategory ?? undefined);
+  }, [selectedCategory]);
+
+  const filtered = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    if (!q) return articles;
+    return articles.filter((a) =>
+      `${a.title} ${a.category} ${a.content}`.toLowerCase().includes(q)
+    );
+  }, [articles, search]);
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
@@ -35,6 +55,8 @@ export default function EncyclopediaScreen() {
         style={styles.search}
         placeholder="Поиск по статьям..."
         placeholderTextColor="#999"
+        value={search}
+        onChangeText={setSearch}
       />
 
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categories}>
@@ -60,10 +82,20 @@ export default function EncyclopediaScreen() {
       </ScrollView>
 
       <View style={styles.articles}>
+        {loading ? <ActivityIndicator size="large" color="#FF9F43" /> : null}
+        {!loading && filtered.length === 0 ? (
+          <Text style={styles.empty}>Ничего не найдено</Text>
+        ) : null}
         {filtered.map((a) => (
-          <TouchableOpacity key={a.id} style={styles.articleCard}>
+          <TouchableOpacity key={a.id} style={styles.articleCard} onPress={() => setExpandedId(expandedId === a.id ? null : a.id)}>
             <Text style={styles.articleCategory}>{a.category}</Text>
             <Text style={styles.articleTitle}>{a.title}</Text>
+            {expandedId === a.id ? (
+              <>
+                <Text style={styles.articleContent}>{a.content}</Text>
+                {a.author ? <Text style={styles.articleAuthor}>Автор: {a.author}</Text> : null}
+              </>
+            ) : null}
           </TouchableOpacity>
         ))}
       </View>
@@ -102,4 +134,7 @@ const styles = StyleSheet.create({
   },
   articleCategory: { fontSize: 12, color: '#FF9F43', fontWeight: '600', marginBottom: 4 },
   articleTitle: { fontSize: 16, fontWeight: '600', color: '#333' },
+  articleContent: { marginTop: 8, fontSize: 14, color: '#444', lineHeight: 20 },
+  articleAuthor: { marginTop: 8, fontSize: 12, color: '#777' },
+  empty: { color: '#777', textAlign: 'center', marginTop: 8 },
 });

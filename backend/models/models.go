@@ -8,13 +8,14 @@ import (
 )
 
 type User struct {
-	ID        string         `gorm:"primaryKey" json:"id"`
-	Email     string         `gorm:"uniqueIndex" json:"email"`
-	Name      string         `json:"name"`
-	Avatar    string         `json:"avatar,omitempty"`
-	CreatedAt time.Time      `json:"created_at"`
-	UpdatedAt time.Time      `json:"updated_at"`
-	DeletedAt gorm.DeletedAt `gorm:"index" json:"-"`
+	ID           string         `gorm:"primaryKey" json:"id"`
+	Email        string         `gorm:"uniqueIndex" json:"email"`
+	Name         string         `json:"name"`
+	PasswordHash string         `json:"-" gorm:"column:password_hash"`
+	Avatar       string         `json:"avatar,omitempty"`
+	CreatedAt    time.Time      `json:"created_at"`
+	UpdatedAt    time.Time      `json:"updated_at"`
+	DeletedAt    gorm.DeletedAt `gorm:"index" json:"-"`
 
 	Pets []Pet `gorm:"foreignKey:OwnerID" json:"pets,omitempty"`
 }
@@ -38,8 +39,8 @@ type Pet struct {
 type Walk struct {
 	ID        string    `gorm:"primaryKey" json:"id"`
 	PetID     string    `gorm:"index" json:"pet_id"`
-	Distance  float64   `json:"distance"`  // km
-	Duration  int       `json:"duration"`  // minutes
+	Distance  float64   `json:"distance"` // km
+	Duration  int       `json:"duration"` // minutes
 	Calories  int       `json:"calories"`
 	Route     string    `json:"route"` // JSON array of {lat, lng}
 	StartedAt time.Time `json:"started_at"`
@@ -49,11 +50,11 @@ type Walk struct {
 type PlaceCategory string
 
 const (
-	PlaceVet      PlaceCategory = "vet"
-	PlacePetShop  PlaceCategory = "pet_shop"
-	PlaceGroomer  PlaceCategory = "groomer"
-	PlacePark     PlaceCategory = "park"
-	PlaceCafe     PlaceCategory = "cafe"
+	PlaceVet     PlaceCategory = "vet"
+	PlacePetShop PlaceCategory = "pet_shop"
+	PlaceGroomer PlaceCategory = "groomer"
+	PlacePark    PlaceCategory = "park"
+	PlaceCafe    PlaceCategory = "cafe"
 )
 
 type Place struct {
@@ -114,12 +115,27 @@ type FeedPost struct {
 }
 
 type Article struct {
-	ID       string    `gorm:"primaryKey" json:"id"`
-	Title    string    `json:"title"`
-	Content  string    `json:"content"`
-	Category string    `gorm:"index" json:"category"`
-	Author   string    `json:"author"`
+	ID        string    `gorm:"primaryKey" json:"id"`
+	Title     string    `json:"title"`
+	Content   string    `json:"content"`
+	Category  string    `gorm:"index" json:"category"`
+	Author    string    `json:"author"`
 	CreatedAt time.Time `json:"created_at"`
+}
+
+type LostPetAlert struct {
+	ID          string    `gorm:"primaryKey" json:"id"`
+	PetID       string    `gorm:"index" json:"pet_id"`
+	UserID      string    `gorm:"index" json:"user_id"`
+	PetName     string    `json:"pet_name"`
+	Breed       string    `json:"breed"`
+	Description string    `json:"description"`
+	Contact     string    `json:"contact"`
+	Latitude    float64   `json:"latitude"`
+	Longitude   float64   `json:"longitude"`
+	Status      string    `gorm:"index" json:"status"` // active, found
+	CreatedAt   time.Time `json:"created_at"`
+	UpdatedAt   time.Time `json:"updated_at"`
 }
 
 func (u *User) BeforeCreate(tx *gorm.DB) error {
@@ -184,6 +200,16 @@ func (fp *FeedPost) BeforeCreate(tx *gorm.DB) error {
 func (a *Article) BeforeCreate(tx *gorm.DB) error {
 	if a.ID == "" {
 		a.ID = uuid.New().String()
+	}
+	return nil
+}
+
+func (l *LostPetAlert) BeforeCreate(tx *gorm.DB) error {
+	if l.ID == "" {
+		l.ID = uuid.New().String()
+	}
+	if l.Status == "" {
+		l.Status = "active"
 	}
 	return nil
 }

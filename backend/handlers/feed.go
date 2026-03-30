@@ -18,14 +18,29 @@ func GetFeed(c *gin.Context) {
 }
 
 func CreateFeedPost(c *gin.Context) {
-	var input models.FeedPost
+	var input struct {
+		PetID    string `json:"pet_id"`
+		Text     string `json:"text" binding:"required"`
+		MediaURL string `json:"media_url"`
+	}
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	if err := db.DB.Create(&input).Error; err != nil {
+	userID := c.GetString("user_id")
+	if userID == "" {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
+		return
+	}
+	post := models.FeedPost{
+		UserID:   userID,
+		PetID:    input.PetID,
+		Text:     input.Text,
+		MediaURL: input.MediaURL,
+	}
+	if err := db.DB.Create(&post).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusCreated, input)
+	c.JSON(http.StatusCreated, post)
 }

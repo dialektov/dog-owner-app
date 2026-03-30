@@ -50,5 +50,19 @@ func main() {
 		db.DB.Save(&a)
 	}
 
+	// Demo lost alert
+	alert := models.LostPetAlert{
+		PetID:       p.ID,
+		UserID:      u.ID,
+		PetName:     p.Name,
+		Breed:       p.Breed,
+		Description: "Пропал рядом с парком. Нужна помощь в поиске.",
+		Contact:     u.Email,
+		Latitude:    55.7570,
+		Longitude:   37.6160,
+		Status:      "active",
+	}
+	db.DB.Save(&alert)
+
 	log.Println("Seed completed")
 }

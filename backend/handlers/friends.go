@@ -32,15 +32,31 @@ func GetFriends(c *gin.Context) {
 
 func AddFriend(c *gin.Context) {
 	var input struct {
-		UserID   string `json:"user_id" binding:"required"`
 		FriendID string `json:"friend_id" binding:"required"`
 	}
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	userID := c.GetString("user_id")
+	if userID == "" {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
+		return
+	}
+	if userID == input.FriendID {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "cannot add yourself"})
+		return
+	}
+	var existing models.Friendship
+	if err := db.DB.Where(
+		"(user_id = ? AND friend_id = ?) OR (user_id = ? AND friend_id = ?)",
+		userID, input.FriendID, input.FriendID, userID,
+	).First(&existing).Error; err == nil {
+		c.JSON(http.StatusOK, existing)
+		return
+	}
 	f := models.Friendship{
-		UserID:   input.UserID,
+		UserID:   userID,
 		FriendID: input.FriendID,
 	}
 	if err := db.DB.Create(&f).Error; err != nil {

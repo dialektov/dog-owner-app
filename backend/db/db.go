@@ -33,5 +33,6 @@ func Init(path string) error {
 		&models.UserLocation{},
 		&models.Article{},
 		&models.FeedPost{},
+		&models.LostPetAlert{},
 	)
 }

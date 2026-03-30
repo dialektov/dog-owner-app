@@ -9,6 +9,7 @@ import FeedingCalculatorScreen from '../screens/FeedingCalculatorScreen';
 import MapScreen from '../screens/MapScreen';
 import SocialScreen from '../screens/SocialScreen';
 import EncyclopediaScreen from '../screens/EncyclopediaScreen';
+import ProfileScreen from '../screens/ProfileScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -71,6 +72,14 @@ export default function AppNavigator() {
         options={{
           tabBarLabel: 'Друзья',
           tabBarIcon: () => <TabIcon icon="👥" />,
+        }}
+      />
+      <Tab.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{
+          tabBarLabel: 'Профиль',
+          tabBarIcon: () => <TabIcon icon="👤" />,
         }}
       />
       <Tab.Screen

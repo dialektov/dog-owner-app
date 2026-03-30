@@ -9,6 +9,8 @@ dog-owner-app/
 ├── backend/          # REST API на Go (Gin, GORM, SQLite)
 ├── src/              # Мобильное приложение (React Native + Expo)
 ├── assets/           # Иконки, сплэш
+├── docs/             # Документация, отчёты, инструкции
+├── eas.json          # Конфигурация EAS Build/Submit для магазинов
 └── README.md
 ```
 
@@ -55,6 +57,12 @@ npm start
 ## API
 
 См. [backend/README.md](backend/README.md).
+
+## Публикация в App Store и Google Play
+
+Чтобы выложить приложение в **App Store** и **Google Play**, используется [EAS (Expo Application Services)](https://docs.expo.dev/build/introduction/): облачная сборка и отправка в магазины. В проекте уже есть конфигурация `eas.json`.
+
+Подробная инструкция: **[docs/ПУБЛИКАЦИЯ_В_МАГАЗИНЫ.md](docs/ПУБЛИКАЦИЯ_В_МАГАЗИНЫ.md)** — что понадобится (аккаунты Apple Developer и Google Play), команды `eas build` и `eas submit`, настройка и альтернатива с ручной загрузкой билда.
 
 ## Лицензия
 

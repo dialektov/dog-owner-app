@@ -50,5 +50,8 @@ backend/data/
 coverage/
 .nyc_output/
 
+# EAS / Store credentials (do not commit)
+google-service-account.json
+
 # Misc
 *.tgz
