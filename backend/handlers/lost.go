@@ -60,10 +60,19 @@ func CreateLostAlert(c *gin.Context) {
 }
 
 func MarkLostAlertFound(c *gin.Context) {
+	userID := c.GetString("user_id")
+	if userID == "" {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
+		return
+	}
 	id := c.Param("id")
 	var alert models.LostPetAlert
 	if err := db.DB.First(&alert, "id = ?", id).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "alert not found"})
+		return
+	}
+	if alert.UserID != userID {
+		c.JSON(http.StatusForbidden, gin.H{"error": "forbidden"})
 		return
 	}
 	alert.Status = "found"

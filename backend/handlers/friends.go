@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/dogowner/backend/db"
 	"github.com/dogowner/backend/models"
@@ -32,7 +33,8 @@ func GetFriends(c *gin.Context) {
 
 func AddFriend(c *gin.Context) {
 	var input struct {
-		FriendID string `json:"friend_id" binding:"required"`
+		FriendID    string `json:"friend_id"`
+		FriendEmail string `json:"friend_email"`
 	}
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -43,25 +45,56 @@ func AddFriend(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
 		return
 	}
-	if userID == input.FriendID {
+	friendID := strings.TrimSpace(input.FriendID)
+	if friendID == "" && strings.TrimSpace(input.FriendEmail) != "" {
+		var friend models.User
+		if err := db.DB.First(&friend, "email = ?", strings.ToLower(strings.TrimSpace(input.FriendEmail))).Error; err != nil {
+			c.JSON(http.StatusNotFound, gin.H{"error": "friend not found"})
+			return
+		}
+		friendID = friend.ID
+	}
+	if friendID == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "friend_id or friend_email required"})
+		return
+	}
+	if userID == friendID {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "cannot add yourself"})
 		return
 	}
 	var existing models.Friendship
 	if err := db.DB.Where(
 		"(user_id = ? AND friend_id = ?) OR (user_id = ? AND friend_id = ?)",
-		userID, input.FriendID, input.FriendID, userID,
+		userID, friendID, friendID, userID,
 	).First(&existing).Error; err == nil {
 		c.JSON(http.StatusOK, existing)
 		return
 	}
 	f := models.Friendship{
 		UserID:   userID,
-		FriendID: input.FriendID,
+		FriendID: friendID,
 	}
 	if err := db.DB.Create(&f).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 	c.JSON(http.StatusCreated, f)
+}
+
+func RemoveFriend(c *gin.Context) {
+	userID := c.GetString("user_id")
+	if userID == "" {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
+		return
+	}
+	friendID := c.Param("id")
+	res := db.DB.Where(
+		"(user_id = ? AND friend_id = ?) OR (user_id = ? AND friend_id = ?)",
+		userID, friendID, friendID, userID,
+	).Delete(&models.Friendship{})
+	if res.Error != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": res.Error.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"removed": friendID})
 }

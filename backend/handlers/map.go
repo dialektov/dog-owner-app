@@ -22,6 +22,22 @@ type UserLocationResponse struct {
 }
 
 func GetUserLocations(c *gin.Context) {
+	currentUserID := c.GetString("user_id")
+	if currentUserID == "" {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
+		return
+	}
+	var friendships []models.Friendship
+	_ = db.DB.Where("user_id = ? OR friend_id = ?", currentUserID, currentUserID).Find(&friendships).Error
+	friendSet := map[string]bool{}
+	for _, f := range friendships {
+		if f.UserID == currentUserID {
+			friendSet[f.FriendID] = true
+		} else {
+			friendSet[f.UserID] = true
+		}
+	}
+
 	var locations []models.UserLocation
 	if err := db.DB.Find(&locations).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -29,6 +45,12 @@ func GetUserLocations(c *gin.Context) {
 	}
 	resp := make([]UserLocationResponse, 0, len(locations))
 	for _, loc := range locations {
+		if loc.UserID != currentUserID && !friendSet[loc.UserID] {
+			continue
+		}
+		if loc.UserID != currentUserID && loc.Status == models.StatusDoNotDisturb {
+			continue
+		}
 		var u models.User
 		name := ""
 		if db.DB.First(&u, "id = ?", loc.UserID).Error == nil {
@@ -61,7 +83,7 @@ func UpdateMyLocation(c *gin.Context) {
 	}
 	status := models.WalkStatus(input.Status)
 	if status == "" {
-		status = models.StatusLookingForCompany
+		status = models.StatusDoNotDisturb
 	}
 	userID := c.GetString("user_id")
 	if userID == "" {

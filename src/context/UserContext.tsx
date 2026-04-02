@@ -8,6 +8,7 @@ export type CurrentUser = {
   id: string;
   name: string;
   email: string;
+  is_admin?: boolean;
 };
 
 type UserContextType = {
@@ -34,7 +35,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
         const parsed = JSON.parse(stored) as { token: string; user: CurrentUser };
         setAuthToken(parsed.token);
         const me = await api.me();
-        const current: CurrentUser = { id: me.id, name: me.name, email: me.email };
+        const current: CurrentUser = { id: me.id, name: me.name, email: me.email, is_admin: me.is_admin };
         setUser(current);
         await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify({ token: parsed.token, user: current }));
       }
@@ -53,9 +54,13 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     setLoading(true);
     try {
       const full = await api.getUser(user.id);
-      const current: CurrentUser = { id: full.id, name: full.name, email: full.email };
+      const current: CurrentUser = { id: full.id, name: full.name, email: full.email, is_admin: full.is_admin };
       setUser(current);
-      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(current));
+      const stored = await AsyncStorage.getItem(STORAGE_KEY);
+      const token = stored ? (JSON.parse(stored) as { token?: string }).token : undefined;
+      if (token) {
+        await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify({ token, user: current }));
+      }
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Ошибка обновления');
     } finally {
@@ -68,7 +73,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     try {
       const resp = await api.register({ email: email.trim(), name: name.trim(), password });
       setAuthToken(resp.token);
-      const current: CurrentUser = { id: resp.user.id, name: resp.user.name, email: resp.user.email };
+      const current: CurrentUser = { id: resp.user.id, name: resp.user.name, email: resp.user.email, is_admin: resp.user.is_admin };
       await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify({ token: resp.token, user: current }));
       setUser(current);
     } catch (e) {
@@ -83,7 +88,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     try {
       const resp = await api.login({ email: email.trim(), password });
       setAuthToken(resp.token);
-      const current: CurrentUser = { id: resp.user.id, name: resp.user.name, email: resp.user.email };
+      const current: CurrentUser = { id: resp.user.id, name: resp.user.name, email: resp.user.email, is_admin: resp.user.is_admin };
       await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify({ token: resp.token, user: current }));
       setUser(current);
     } catch (e) {

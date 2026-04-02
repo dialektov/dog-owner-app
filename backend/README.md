@@ -35,7 +35,7 @@ go run .
 
 ### Места
 - `GET /api/v1/places?category=vet` — список мест
-- `GET /api/v1/places/search?lat=55.75&lng=37.61&radius_km=3&limit=30&save=true` — поиск dog-friendly мест через Яндекс Карты и (опционально) сохранение в БД
+- `GET /api/v1/places/search?lat=55.75&lng=37.61&radius_km=3&limit=30&save=true` — **онлайн**-поиск мест: сначала OpenStreetMap (Overpass, без ключа), при пустом результате и наличии `YANDEX_MAPS_API_KEY` — дополнительно Яндекс; кэш для этого запроса не используется
 - `GET /api/v1/places/:id` — место с отзывами
 - `POST /api/v1/places` — добавить место
 - `POST /api/v1/places/:id/reviews` — оставить отзыв
@@ -73,7 +73,13 @@ go run .
 set YANDEX_MAPS_API_KEY=ваш_ключ
 ```
 
-Без ключа эндпоинт `GET /api/v1/places/search` вернёт ошибку.
+Или добавьте в `.env` (в `backend/.env` или в корне проекта):
+
+```env
+YANDEX_MAPS_API_KEY=ваш_ключ
+```
+
+Без ключа Яндекса поиск всё равно работает через OpenStreetMap. Ключ нужен только как дополнительный источник, если в зоне нет данных в OSM.
 
 Для авторизации задайте (рекомендуется в production):
 

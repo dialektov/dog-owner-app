@@ -1,0 +1,899 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[left=17mm,right=10mm,top=20mm,bottom=20mm]{geometry}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T2A]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage[russian,english]{babel}
+\else
+  \usepackage{fontspec}
+  \usepackage{polyglossia}
+  \setdefaultlanguage{russian}
+  \setotherlanguage{english}
+  \IfFontExistsTF{Times New Roman}{
+    \setmainfont{Times New Roman}
+  }{
+    \setmainfont{TeX Gyre Termes}
+  }
+  \IfFontExistsTF{Times New Roman}{
+    \setmonofont{Times New Roman}
+  }{
+    \setmonofont{TeX Gyre Termes}
+  }
+\fi
+\usepackage{csquotes}
+
+\usepackage{setspace}
+\onehalfspacing
+\usepackage{indentfirst}
+\setlength{\parindent}{1.25cm}
+\setlength{\parskip}{0pt}
+\usepackage{microtype}
+\usepackage{hyperref}
+\usepackage{cite}
+\usepackage{fancyhdr}
+\usepackage{float}
+\usepackage{array}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{longtable}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows.meta,shapes.geometric}
+
+\captionsetup[table]{labelfont=bf,textfont=it}
+\captionsetup[figure]{labelfont=bf,textfont=it}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue,
+  citecolor=blue,
+  urlcolor=blue
+}
+
+\renewcommand{\contentsname}{Содержание}
+\renewcommand{\refname}{Список использованных источников}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcommand{\code}[1]{{\small\texttt{#1}}}
+
+\makeatletter
+\newcommand{\papercenterpagenumber}{%
+  \if@twoside
+    \ifodd\c@page
+      \hspace*{-\dimexpr 1in + \hoffset + \oddsidemargin\relax}%
+    \else
+      \hspace*{-\dimexpr 1in + \hoffset + \evensidemargin\relax}%
+    \fi
+  \else
+    \hspace*{-\dimexpr 1in + \hoffset + \oddsidemargin\relax}%
+  \fi
+  \makebox[\paperwidth]{\hfil\thepage\hfil}%
+}
+\makeatother
+
+\fancypagestyle{plain}{%
+  \fancyhf{}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+  \fancyfoot[L]{\makebox[0pt][l]{\papercenterpagenumber}}%
+}
+
+\begin{document}
+
+\IfFileExists{title_kr.tex}{
+  \input{title_kr}
+}{
+  \begin{titlepage}
+  \thispagestyle{empty}
+  {\setstretch{1.0}
+  \begin{center}
+  ПРАВИТЕЛЬСТВО РОССИЙСКОЙ ФЕДЕРАЦИИ\\
+  ФГАОУ ВО НАЦИОНАЛЬНЫЙ ИССЛЕДОВАТЕЛЬСКИЙ УНИВЕРСИТЕТ\\
+  «ВЫСШАЯ ШКОЛА ЭКОНОМИКИ»
+  \\
+  \bigskip
+  Факультет компьютерных наук\\
+  Образовательная программа «Прикладная математика и информатика»
+  \end{center}
+  }
+  \vspace{2em}
+  \vspace{4em}
+  \begin{center}
+  {\bf Отчет о программном проекте на тему:}\\
+  {\bf DogPaw: мобильная платформа для владельцев собак}\\
+  \end{center}
+  \vspace{3em}
+  \noindent{\bf Выполнил студент:}
+  \vspace{2mm}
+  {\setstretch{1.15}
+  \noindent\begin{tabular}{@{}p{0.42\textwidth}@{\hspace{1.5em}}p{0.48\textwidth}@{}}
+  группы \#БПМИ237, 3 курса & Диалектов Иван Фёдорович \\
+  \end{tabular}}
+  \vspace{1.5em}
+  \noindent{\bf Приняли руководители проекта:}
+  \vspace{2mm}
+  {\setstretch{1.15}
+  \begin{tabular}{@{}p{0.92\textwidth}@{}}
+  Песоцкая Елена Юрьевна \\
+  Кандидат экономических наук \\
+  Доцент \\
+  Национальный исследовательский университет «Высшая школа экономики» (НИУ ВШЭ), \\
+  Факультет компьютерных наук, Департамент программной инженерии \\
+  \end{tabular}}
+  \vspace{\fill}
+  \begin{center}
+  Москва 2026
+  \end{center}
+  \end{titlepage}
+}
+
+\pagenumbering{arabic}
+\setcounter{page}{2}
+\pagestyle{plain}
+
+\tableofcontents
+\clearpage
+
+\section*{Аннотация}
+\addcontentsline{toc}{section}{Аннотация}
+
+В отчете представлены результаты финального этапа программного проекта \textbf{DogPaw} --- мобильной платформы для владельцев собак с клиент-серверной архитектурой. Цель проекта заключалась в создании единого цифрового продукта, который объединяет учет данных о питомце, трекинг прогулок, социальные функции, карту dog-friendly мест и инструменты безопасности (QR-идентификация и режим поиска потерявшегося питомца). 
+
+В результате реализована рабочая версия приложения для \textit{iOS/Android} на \textit{React Native (Expo)} и серверной части на \textit{Go + Gin + GORM + SQLite}. На финальном этапе были добавлены: регистрация и вход по JWT, персональные и ролевые права, лента с фото/лайками/комментариями и сортировкой, добавление друзей по email и по QR, модерация пользовательских статей для базы знаний, карта с фильтрами категорий и логикой приватности геопозиции. Дополнительно доведены до актуального состояния: трекер прогулок (время с секундами, история и удаление записей), поиск мест на backend по данным OpenStreetMap (Overpass) с кэшем, режим \textit{lost\&find} с текстом объявления и снятием метки с карты, отдельный экран просмотра статьи в базе знаний.
+
+Проведено тестирование функциональности на уровне API и клиентской логики, выполнены повторные прогоны после исправлений, оформлен протокол тестирования. Показано, что система поддерживает ключевые сценарии предметной области, а архитектурные решения обеспечивают расширяемость проекта для дальнейшего перехода к production-сценарию.
+
+\section*{Ключевые слова}
+\addcontentsline{toc}{section}{Ключевые слова}
+мобильное приложение; pet-tech; React Native; Expo; Golang; REST API; JWT; геолокация; социальная лента; модерация контента.
+
+
+\section{Введение}
+
+\subsection{Актуальность темы}
+
+Сегмент pet-tech демонстрирует устойчивый рост: владельцы животных все чаще используют мобильные сервисы для учета здоровья питомца, поиска профильных услуг и коммуникации с сообществом~\cite{statista_pet}. При этом повседневный пользовательский путь обычно фрагментирован между несколькими приложениями: одно для заметок о питомце, другое для карт, третье для общения. Такая фрагментация снижает качество пользовательского опыта, увеличивает число ручных действий и мешает построению единой истории данных.
+
+Для владельцев собак эта задача особенно важна по двум причинам. Во-первых, приложение используется в регулярных бытовых сценариях: прогулки, контроль состояния питомца и общение с другими владельцами. Во-вторых, есть критичные по времени ситуации (потеря питомца, быстрый поиск контактов владельца), где требуется надежная и быстро доступная функциональность.
+
+\subsection{Проблема и цель проекта}
+
+Проблема проекта формулируется как отсутствие доступного единого мобильного решения, которое одновременно покрывает: профиль питомца, прогулочную активность, карту полезных мест, социальный блок и контентную базу знаний с проверкой качества материалов.
+
+\textbf{Цель проекта} --- разработать и довести до работоспособного состояния программную платформу DogPaw, обеспечивающую комплексный набор пользовательских сценариев владельца собаки в одной системе.
+
+\subsection{Задачи финального этапа}
+
+На финальном этапе были поставлены и решены следующие задачи:
+\begin{enumerate}
+  \item завершить серверную модель авторизации и прав доступа;
+  \item реализовать полнофункциональную ленту: публикации с фото, лайки, комментарии, сортировка;
+  \item реализовать рабочие сценарии дружбы: добавление по email/QR и удаление;
+  \item доработать умную карту: фильтрация категорий, правила видимости, обновление геопозиции;
+  \item ввести ролевую модель администрирования и модерацию базы знаний;
+  \item привести интерфейс ключевых экранов к единой визуальной концепции;
+  \item провести системное тестирование и оформить результаты в технической документации.
+\end{enumerate}
+
+\subsection{Объект и предмет разработки}
+
+Объект исследования --- мобильные информационные системы для владельцев домашних животных.  
+Предмет разработки --- программная архитектура и реализация клиент-серверного приложения DogPaw, включая логику данных, пользовательские сценарии и правила модерации контента.
+
+
+\section{Анализ предметной области и аналогов}
+
+\subsection{Пользовательские потребности}
+
+На основе анализа пользовательских сценариев и существующих решений можно выделить пять базовых потребностей:
+\begin{itemize}
+  \item хранение и быстрый доступ к актуальным данным о питомце;
+  \item безопасная идентификация питомца и контакт с владельцем;
+  \item понятный учет прогулочной активности;
+  \item поиск релевантных мест и взаимодействие с локальным сообществом;
+  \item доступ к полезному контенту с контролем качества.
+\end{itemize}
+
+\subsection{Сравнение с аналогами}
+
+Для корректной постановки задачи сравнение выполнялось не с абстрактными \enquote{типовыми} приложениями, а с реальными прямыми и косвенными аналогами:
+\begin{itemize}
+  \item \textbf{PetDesk} --- профиль питомца, напоминания, коммуникация с клиникой~\cite{petdesk};
+  \item \textbf{Rover} --- услуги догситтинга и выгулов, marketplace-модель~\cite{rover};
+  \item \textbf{Strava} --- зрелая модель трекинга активности и социальной ленты~\cite{strava};
+  \item \textbf{BringFido} --- каталог dog-friendly мест~\cite{bringfido};
+  \item \textbf{PawBoost} --- сценарии lost\&found для домашних животных~\cite{pawboost}.
+\end{itemize}
+
+Тезис \enquote{отсутствует единое решение} в проекте формализован так: среди рассмотренных продуктов не обнаружено приложения, которое одновременно предоставляет \textit{в одном пользовательском контуре} (без переключения между сервисами) следующие функции: профиль питомца + QR-идентификация + трекинг прогулок + карта мест по собачьим категориям + realtime-карта друзей + встроенная лента + база знаний с модерацией.
+
+\subsection{Функциональная матрица}
+
+Ниже приведена расширенная сравнительная матрица функций по ключевым конкурентам (та же структура, что в отчёте КТ-1). Источник: анализ конкурентов от 23.12.2025. Легенда: \textbf{+}~--- функция есть; \textbf{---}~--- нет (в том числе при частичной или иной форме реализации; для единообразия без шкалы «частично»). Сокращения колонок: Проф.\ = профиль питомца; QR = QR-адресник/скан; Прог.\ = трекер прогулок; Корм.\ = кормление (калькулятор/напоминания); Карта = карта мест; Отз.\ = оценки/отзывы; Друз.\ = друзья/комьюнити; Чаты = чаты; Лента = лента фото/видео; Live = realtime-карта людей/статусы; База = база знаний; L\&F = Lost\&Found; Серв.\ = сервисы/маркетплейс.
+
+\footnotesize
+\setlength{\tabcolsep}{2pt}
+\setlength\LTleft{\fill}
+\setlength\LTright{\fill}
+\begin{longtable}{@{}p{1.55cm}p{1.45cm}ccccccccccccc@{}}
+\caption{Матрица функций: DogPaw и конкуренты (приложение для владельцев собак)} \label{tab:analogs-kt2} \\
+\toprule
+\textbf{Приложение} & \textbf{Катег.} & Проф. & QR & Прог. & Корм. & Карта & Отз. & Друз. & Чаты & Лента & Live & База & L\&F & Серв. \\
+\midrule
+\endfirsthead
+
+\multicolumn{15}{c}{\tablename\ \thetable\ --- продолжение} \\
+\toprule
+\textbf{Приложение} & \textbf{Катег.} & Проф. & QR & Прог. & Корм. & Карта & Отз. & Друз. & Чаты & Лента & Live & База & L\&F & Серв. \\
+\midrule
+\endhead
+
+\bottomrule
+\endfoot
+
+DogPaw (реализация КТ-2) & all-in-one & + & + & + & + & -- & + & -- & + & + & + & + & -- \\
+DogPack & карта, комьюнити, L\&F & -- & -- & -- & -- & + & -- & + & + & + & -- & -- & + & + \\
+Pawscout & безопасность, комьюнити & + & -- & + & -- & + & -- & + & -- & -- & -- & -- & + & -- \\
+BringFido & dog-friendly каталог & -- & -- & -- & -- & + & + & -- & -- & -- & -- & -- & -- & -- \\
+Sniffspot & бронирование площадок & -- & -- & -- & -- & + & + & -- & -- & -- & -- & -- & -- & + \\
+PawBoost & lost\&found & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & + & -- \\
+PetHub & QR ID, L\&F сервис & + & + & -- & -- & -- & -- & -- & -- & -- & -- & -- & + & -- \\
+11pets & здоровье, дневник & + & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
+DogLog & уход, ремайндеры & + & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
+PetDesk & ремайндеры, клиники & + & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
+Wag! & маркетплейс выгул & -- & -- & -- & -- & -- & + & -- & + & -- & -- & -- & -- & + \\
+Rover & маркетплейс ситтеры & -- & -- & -- & -- & -- & + & -- & + & -- & -- & -- & -- & + \\
+Fi (smart collar) & GPS ошейник, health & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
+Tractive & GPS трекер, здоровье & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
+Whistle & GPS трекер (закрыт) & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
+WoofTrax & трекер + благотворит. & -- & -- & + & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
+Amiko & трекер прогулок & -- & -- & + & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
+Pet First Aid & энциклопедия, помощь & + & -- & -- & -- & -- & -- & -- & -- & -- & -- & + & -- & -- \\
+Puppr & обучение & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & + & -- & -- \\
+Pupford & обучение, контент & + & -- & -- & -- & -- & -- & -- & -- & -- & -- & + & -- & -- \\
+Dogo & обучение, трекинг & -- & -- & -- & -- & -- & -- & -- & -- & -- & + & -- & -- & -- \\
+Petzbe & соцсеть питомцев & + & -- & -- & -- & -- & -- & -- & -- & + & -- & -- & -- & -- \\
+\bottomrule
+\end{longtable}
+\normalsize
+
+Из матрицы следует: у DogPaw в текущей версии нет отдельных чатов и экрана отзывов по точкам на карте (комментарии реализованы в ленте; отзывы по местам --- только потенциал API). При этом сочетание профиля, QR, прогулок, карты мест, друзей и ленты, умной карты (Live), базы знаний и lost\&find в одном приложении у аналогов встречается редко. Ближе всего по охвату --- DogPack и Pawscout, но у них не доведены до уровня столбца QR, кормление и Live-карта.
+
+
+\section{Требования к системе}
+
+\subsection{Функциональные требования}
+
+Ключевые функциональные требования:
+\begin{enumerate}
+  \item регистрация/аутентификация пользователя и восстановление сессии;
+  \item создание, изменение и просмотр карточки питомца;
+  \item генерация QR-кода питомца и доступ к карточке по QR;
+  \item запуск/остановка прогулки с сохранением статистики, просмотр истории и удаление записей;
+  \item работа карты мест с фильтрацией по категориям и отображением собственной геопозиции;
+  \item умная карта с геопозицией пользователя и друзей, цветовая индикация статуса на маркерах;
+  \item социальный модуль: друзья, посты, комментарии, лайки к постам;
+  \item база знаний: публикация предложений, просмотр статьи на отдельном экране, модерация;
+  \item административные операции удаления контента и выдачи прав.
+\end{enumerate}
+
+\subsection{Нефункциональные требования}
+
+Нефункциональные требования заданы через измеримые метрики и критерии приемки (таблица~\ref{tab:nfr}).
+
+\begin{table}[H]
+\centering
+\small
+\caption{Формализованные нефункциональные требования}
+\label{tab:nfr}
+\begin{tabular}{|L{0.19\textwidth}|L{0.30\textwidth}|L{0.24\textwidth}|L{0.20\textwidth}|}
+\hline
+\textbf{Категория} & \textbf{Метрика} & \textbf{Целевое значение} & \textbf{Метод измерения} \\
+\hline
+Производительность API & p95 latency для \code{GET /feed}, \code{/map/users}, \code{/articles} & \(\leq 700\) мс при 50 RPS & k6 / JMeter, 5 мин прогон \\
+\hline
+Отзывчивость UI & Time-to-interactive ключевых экранов & \(\leq 2.0\) c на среднем устройстве & React Native profiler + ручной замер \\
+\hline
+Надежность сети & Доля успешных запросов при нестабильной сети & \(\geq 99\%\) при retry=1; базовый timeout API 10\,с (для тяжёлого поиска мест на клиенте задан увеличенный лимит) & chaos-network тест в dev среде \\
+\hline
+Доступность backend & Uptime локального стенда во время сессии теста & \(\geq 99\%\) за 24 часа & health-check polling \\
+\hline
+Безопасность доступа & Доля защищенных endpoint, требующих JWT & 100\% приватных endpoint & ревизия роутов + интеграционные тесты \\
+\hline
+Консистентность данных & Ошибки сериализации/десериализации JSON моделей & 0 критических ошибок на smoke suite & API smoke + контрактные тесты \\
+\hline
+\end{tabular}
+\end{table}
+
+\textbf{Критерий \enquote{без визуальной деградации}} в проекте трактуется как отсутствие заметных лагов интерфейса при 60 FPS-ориентированном рендеринге: длительность блокирующих операций на основном потоке не должна превышать 100 мс чаще чем в 5\% интеракций экрана.
+
+\subsection{Ограничения проекта}
+
+\begin{itemize}
+  \item локальная разработка и тестирование выполняются в LAN-сети;
+  \item полнота выдачи точек на карте мест зависит от покрытия региона в OpenStreetMap и доступности публичных Overpass-инстансов;
+  \item медиа в ленте на текущем этапе сохраняются как URI/данные запроса без отдельного CDN;
+  \item отсутствует production-процедура миграций и централизованный мониторинг.
+\end{itemize}
+
+
+\section{Архитектура и проектные решения}
+
+\subsection{Общая архитектура}
+
+Система реализована как клиент-серверное приложение:
+\begin{itemize}
+  \item мобильный клиент: React Native + Expo;
+  \item backend API: Go + Gin;
+  \item хранение данных: SQLite + GORM;
+  \item транспорт: HTTP/JSON;
+  \item авторизация: JWT Bearer Token.
+\end{itemize}
+
+\subsection{Логическая декомпозиция}
+
+\begin{table}[H]
+\centering
+\small
+\caption{Декомпозиция модулей системы}
+\begin{tabular}{|L{0.3\textwidth}|L{0.62\textwidth}|}
+\hline
+\textbf{Модуль} & \textbf{Ответственность} \\
+\hline
+Auth & Регистрация, вход, проверка токена, получение текущего пользователя, выдача admin-прав owner-аккаунтом \\
+\hline
+Pets & Профили питомцев, QR-идентификация, обновление медицинских данных \\
+\hline
+Walks & Учет прогулок, хранение статистики и маршрутов \\
+\hline
+Map/Places & Поиск и выдача мест, фильтры категорий, геопозиция пользователей \\
+\hline
+Friends/Social & Дружба, лента, лайки, комментарии, удаление постов админом \\
+\hline
+Knowledge Base & Публичные статьи, подача на модерацию, админ-решения approve/reject/delete \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Модель данных}
+
+Ключевые сущности: \code{User}, \code{Pet}, \code{Walk}, \code{Place}, \code{UserLocation}, \code{Friendship}, \code{FeedPost}, \code{FeedLike}, \code{FeedComment}, \code{Article}, \code{LostPetAlert}.  
+На финальном этапе добавлены поля для ролевой модели и модерации (\code{is\_admin}, \code{status}, \code{submitted\_by}, \code{approved\_by}).
+
+\subsection{Ролевая модель}
+
+\begin{itemize}
+  \item \textbf{Пользователь:} базовые операции со своим контентом и взаимодействие с друзьями.
+  \item \textbf{Администратор:} модерация базы знаний и удаление постов.
+  \item \textbf{Owner-аккаунт:} единственный субъект, который может выдавать admin-роль другим пользователям (при условии дружбы).
+\end{itemize}
+
+Такой подход минимизирует риск бесконтрольной эскалации привилегий и соответствует требованию централизованного контроля прав.
+
+\subsection{C4: Context}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[node distance=10mm, >=Stealth]
+\node[draw, rounded corners, fill=blue!10, minimum width=42mm, minimum height=10mm] (dogpaw) {Система DogPaw};
+\node[draw, rounded corners, fill=green!10, above left=of dogpaw, minimum width=38mm] (owner) {Владелец собаки};
+\node[draw, rounded corners, fill=green!10, below left=of dogpaw, minimum width=38mm] (admin) {Администратор};
+\node[draw, rounded corners, fill=orange!10, above right=of dogpaw, minimum width=45mm] (maps) {Картографический API};
+\node[draw, rounded corners, fill=orange!10, below right=of dogpaw, minimum width=45mm] (expo) {Expo mobile runtime};
+\draw[->] (owner) -- node[above, sloped] {\tiny мобильный UI} (dogpaw);
+\draw[->] (admin) -- node[below, sloped] {\tiny модерация} (dogpaw);
+\draw[->] (dogpaw) -- node[above, sloped] {\tiny поиск мест} (maps);
+\draw[->] (dogpaw) -- node[below, sloped] {\tiny клиентская сборка} (expo);
+\end{tikzpicture}
+\caption{C4 Context: внешнее окружение системы DogPaw}
+\end{figure}
+
+\subsection{C4: Container}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[node distance=8mm, >=Stealth]
+\node[draw, rounded corners, fill=purple!10, minimum width=38mm] (mobile) {Mobile App\\(React Native)};
+\node[draw, rounded corners, fill=cyan!10, right=20mm of mobile, minimum width=38mm] (api) {Backend API\\(Go/Gin)};
+\node[draw, rounded corners, fill=yellow!15, right=20mm of api, minimum width=34mm] (db) {SQLite DB};
+\node[draw, rounded corners, fill=gray!15, below=12mm of api, minimum width=42mm] (ext) {External Maps Provider};
+\draw[->] (mobile) -- node[above]{\tiny HTTPS/JSON} (api);
+\draw[->] (api) -- node[above]{\tiny GORM} (db);
+\draw[->] (api) -- node[right]{\tiny REST} (ext);
+\end{tikzpicture}
+\caption{C4 Container: контейнеры и их взаимодействие}
+\end{figure}
+
+\subsection{Sequence diagram (основной сценарий ленты)}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[node distance=9mm, >=Stealth]
+\node (u) at (0,0) {\textbf{User}};
+\node (m) at (3.2,0) {\textbf{Mobile}};
+\node (a) at (6.4,0) {\textbf{API}};
+\node (d) at (9.6,0) {\textbf{DB}};
+\draw[dashed] (u) -- +(0,-3.8);
+\draw[dashed] (m) -- +(0,-3.8);
+\draw[dashed] (a) -- +(0,-3.8);
+\draw[dashed] (d) -- +(0,-3.8);
+\draw[->] (0,-0.7) -- (3.2,-0.7) node[midway,above]{\tiny создаёт пост};
+\draw[->] (3.2,-1.3) -- (6.4,-1.3) node[midway,above]{\tiny POST /feed};
+\draw[->] (6.4,-1.9) -- (9.6,-1.9) node[midway,above]{\tiny INSERT feed\_posts};
+\draw[<-] (6.4,-2.5) -- (9.6,-2.5) node[midway,above]{\tiny id,time};
+\draw[<-] (3.2,-3.1) -- (6.4,-3.1) node[midway,above]{\tiny 201 + JSON};
+\draw[<-] (0,-3.7) -- (3.2,-3.7) node[midway,above]{\tiny обновлённая лента};
+\end{tikzpicture}
+\caption{Sequence diagram: публикация поста в ленту}
+\end{figure}
+
+\subsection{ER-диаграмма (ядро данных)}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[node distance=9mm, >=Stealth]
+\node[draw, rounded corners, fill=blue!8, minimum width=28mm] (users) {users};
+\node[draw, rounded corners, fill=blue!8, below left=of users, minimum width=28mm] (pets) {pets};
+\node[draw, rounded corners, fill=blue!8, below right=of users, minimum width=28mm] (feed) {feed\_posts};
+\node[draw, rounded corners, fill=blue!8, right=of feed, minimum width=28mm] (comments) {feed\_comments};
+\node[draw, rounded corners, fill=blue!8, right=of users, minimum width=28mm] (articles) {articles};
+\draw[->] (pets) -- node[left]{\tiny owner\_id} (users);
+\draw[->] (feed) -- node[left]{\tiny user\_id} (users);
+\draw[->] (comments) -- node[above]{\tiny post\_id} (feed);
+\draw[->] (comments) |- node[pos=0.75,right]{\tiny user\_id} (users);
+\draw[->] (articles) -- node[above]{\tiny submitted\_by / approved\_by} (users);
+\end{tikzpicture}
+\caption{ER-диаграмма ключевых сущностей}
+\end{figure}
+
+
+\section{Технологический стек и обоснование выбора}
+
+\subsection{Мобильная часть}
+
+\textbf{React Native + Expo} выбраны как баланс между скоростью разработки и качеством пользовательского интерфейса:
+\begin{itemize}
+  \item единая кодовая база для iOS и Android;
+  \item удобная интеграция с camera/location/image picker;
+  \item быстрый цикл проверки изменений через Expo Go.
+\end{itemize}
+
+Альтернативы для мобильной части (\textit{Flutter}, нативная двойная разработка \textit{Swift+Kotlin}) рассматривались, но для данного проекта уступали по критерию скорости итераций и стоимости поддержки команды из одного разработчика. Приоритетом проекта был быстрый выпуск функционального вертикального среза (\textit{auth + map + social + moderation}) с минимальными overhead на инфраструктуру сборки.
+
+\subsection{Серверная часть}
+
+\textbf{Go + Gin} обеспечивают:
+\begin{itemize}
+  \item простой и быстрый HTTP-слой;
+  \item понятную структуру handlers/services/router;
+  \item устойчивую работу под параллельной нагрузкой.
+\end{itemize}
+
+В сравнении с \textit{Node.js/Express} и \textit{Django REST} выбор Go оправдан для проекта DogPaw следующими факторами: низкие накладные расходы на runtime, единый бинарный артефакт запуска, предсказуемая производительность для realtime-эндпоинтов карты и минимальная сложность деплоя учебного стенда.
+
+\subsection{Хранилище}
+
+\textbf{SQLite + GORM} подходят для учебного и пред-продакшен этапа:
+\begin{itemize}
+  \item быстрая инициализация без отдельного DB-сервера;
+  \item автомиграции схемы;
+  \item переносимость и низкий порог сопровождения.
+\end{itemize}
+
+Сравнение с альтернативами:
+\begin{itemize}
+  \item \textit{PostgreSQL} функционально богаче, но усложняет инфраструктуру и требует отдельного администрирования;
+  \item \textit{MongoDB} упрощает документную модель, но усложняет связи и ролевые проверки в текущей предметной логике.
+\end{itemize}
+Для DogPaw выбран путь \textit{SQLite сейчас + возможность миграции на PostgreSQL}, что дает быстрый старт и сохраняет стратегию масштабирования.
+
+\subsection{Карты и геоданные}
+
+\textbf{react-native-maps} на клиенте и поиск мест на backend через \textbf{OpenStreetMap} (запросы к Overpass API) с кэшированием на сервере позволяют:
+\begin{itemize}
+  \item отображать маркеры по выбранным категориям и снижать лишние запросы при панорамировании (дебаунс, округление области);
+  \item кэшировать повторные запросы к поиску мест на сервере в памяти на ограниченное время;
+  \item периодически обновлять позиции пользователей на умной карте и при возврате на экран подтягивать актуальный список объявлений о пропаже.
+\end{itemize}
+
+
+\section{Реализация ключевых сценариев}
+
+\subsection{Профиль питомца и QR}
+
+При создании карточки формируется уникальный QR-идентификатор.  
+Сценарии:
+\begin{enumerate}
+  \item пользователь может добавить фотографию питомца из галереи или сделать снимок с камеры прямо в приложении;
+  \item при редактировании карточки доступно удаление ранее выбранного фото;
+  \item владелец показывает QR на ошейнике;
+  \item другой пользователь сканирует QR в приложении;
+  \item система открывает карточку питомца и позволяет добавить владельца в друзья.
+\end{enumerate}
+
+\subsection{Прогулки}
+
+Сценарий включает:
+\begin{itemize}
+  \item старт трекинга по разрешению геолокации;
+  \item накопление дистанции, длительности (отображение с точностью до секунды) и оценки калорий; учёт расстояния с фильтрацией выбросов координат GPS;
+  \item завершение и сохранение прогулки в историю;
+  \item просмотр истории на отдельном экране и удаление записей.
+\end{itemize}
+
+\subsection{Лента}
+
+Реализованы:
+\begin{itemize}
+  \item публикация текст + фото;
+  \item лайк и его снятие;
+  \item текстовые комментарии;
+  \item сортировка по \textit{newest / likes / comments / interesting};
+  \item удаление поста админом.
+\end{itemize}
+
+\subsection{Друзья}
+
+Поддерживаются:
+\begin{itemize}
+  \item добавление по email;
+  \item добавление через QR-поток;
+  \item удаление из списка друзей.
+\end{itemize}
+
+\subsection{Умная карта и карта мест}
+
+Реализовано:
+\begin{itemize}
+  \item фильтрация мест по четырем категориям (ветеринария, зоомагазин, груминг, парк/площадка);
+  \item интерактивная легенда-контроллер;
+  \item на карте мест отображается собственная геопозиция при выданном разрешении;
+  \item видимость на умной карте: пользователь и друзья; скрытие друзей в статусе \code{do\_not\_disturb};
+  \item цвет маркера соответствует статусу (в т.\,ч. ограничения платформы iOS для стандартных пинов);
+  \item статус по умолчанию при обновлении позиции на сервере: \code{do\_not\_disturb}.
+\end{itemize}
+
+\subsection{База знаний и модерация}
+
+Пользователь отправляет статью со статусом \code{pending}; просмотр опубликованной статьи выполняется на отдельном экране.  
+Администратор видит отдельный блок ожидающих материалов, принимает решение:
+\begin{itemize}
+  \item \code{approve} $\rightarrow$ публикация;
+  \item \code{reject} $\rightarrow$ отклонение;
+  \item удаление записи (admin only).
+\end{itemize}
+
+\subsection{Потеря питомца}
+
+Сценарий включает создание объявления из карточки питомца с произвольным текстом сообщения и координатами (по возможности --- текущее местоположение), отображение активных объявлений на карте в отдельном режиме и снятие объявления владельцем после нахождения питомца; список на клиенте обновляется при возврате на экран карты.
+
+
+\section{REST API: спецификация и примеры}
+
+\subsection{Карта endpoint'ов}
+
+\begin{table}[H]
+\centering
+\small
+\caption{Ключевые endpoint'ы backend API}
+\begin{tabular}{|L{0.15\textwidth}|L{0.38\textwidth}|L{0.16\textwidth}|L{0.21\textwidth}|}
+\hline
+\textbf{Метод} & \textbf{Endpoint} & \textbf{Auth} & \textbf{Назначение} \\
+\hline
+POST & \code{/api/v1/auth/register} & нет & регистрация \\
+\hline
+POST & \code{/api/v1/auth/login} & нет & вход \\
+\hline
+GET & \code{/api/v1/auth/me} & JWT & профиль текущего пользователя \\
+\hline
+GET & \code{/api/v1/feed?sort=...} & нет & получить ленту \\
+\hline
+POST & \code{/api/v1/feed} & JWT & создать пост \\
+\hline
+POST & \code{/api/v1/feed/:id/comments} & JWT & добавить комментарий \\
+\hline
+POST & \code{/api/v1/friends} & JWT & добавить друга по id/email \\
+\hline
+DELETE & \code{/api/v1/friends/:id} & JWT & удалить друга \\
+\hline
+GET & \code{/api/v1/map/users} & JWT & умная карта: видимые пользователи \\
+\hline
+PUT & \code{/api/v1/map/me} & JWT & обновить свою позицию \\
+\hline
+POST & \code{/api/v1/articles/submit} & JWT & отправить статью \\
+\hline
+PUT & \code{/api/v1/articles/:id/moderate} & JWT(admin) & approve/reject \\
+\hline
+GET & \code{/api/v1/pets/:id/walks} & нет & история прогулок питомца \\
+\hline
+POST & \code{/api/v1/walks} & нет & сохранить прогулку \\
+\hline
+DELETE & \code{/api/v1/walks/:id} & JWT & удалить прогулку (владелец) \\
+\hline
+GET & \code{/api/v1/places/search?lat=...} & нет & поиск мест (внешние API + кэш) \\
+\hline
+GET/POST & \code{/api/v1/lost} & GET нет / POST JWT & объявления о пропаже \\
+\hline
+PUT & \code{/api/v1/lost/:id/found} & JWT & снять объявление (владелец) \\
+\hline
+\end{tabular}
+\end{table}
+
+\noindent\textit{Примечание:} в учебной сборке маршрут \code{POST /walks} не обёрнут в \code{authMiddleware} (в отличие от \code{DELETE /walks/:id}), что следует учитывать при переносе в production.
+
+\subsection{Примеры запросов и JSON}
+
+\textbf{1) Создание поста}
+\begin{verbatim}
+POST /api/v1/feed
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+  "text": "Сегодня отличная прогулка!",
+  "media_url": "data:image/jpeg;base64,..."
+}
+\end{verbatim}
+
+\textbf{Ответ}
+\begin{verbatim}
+{
+  "id": "post_uuid",
+  "user_id": "user_uuid",
+  "text": "Сегодня отличная прогулка!",
+  "likes": 0,
+  "created_at": "2026-04-01T09:15:00Z"
+}
+\end{verbatim}
+
+\textbf{2) Отправка статьи на модерацию}
+\begin{verbatim}
+POST /api/v1/articles/submit
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+  "title": "Как подготовить собаку к зиме",
+  "content": "Пошаговый чеклист...",
+  "category": "Уход"
+}
+\end{verbatim}
+
+\textbf{Ответ}
+\begin{verbatim}
+{
+  "id": "article_uuid",
+  "status": "pending",
+  "submitted_by": "user_uuid"
+}
+\end{verbatim}
+
+\textbf{3) Обновление геопозиции}
+\begin{verbatim}
+PUT /api/v1/map/me
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+  "latitude": 55.7558,
+  "longitude": 37.6173,
+  "status": "do_not_disturb"
+}
+\end{verbatim}
+
+\noindent\textit{Примечание:} при отсутствии поля \code{status} сервер сохраняет значение по умолчанию \code{do\_not\_disturb}.
+
+\subsection{Описание API (APU) и контрактов}
+
+В проекте используется контрактный подход к API: клиентский модуль \code{src/api/client.ts} является единой точкой доступа и содержит типизированные методы для всех ключевых сценариев. На стороне backend маршруты объявлены централизованно в \code{router/router.go}, а проверки прав доступа вынесены в middleware (\code{authMiddleware}, \code{optionalAuthMiddleware}). Это снижает риск рассинхронизации между UI и серверной логикой.
+
+
+\section{Тестирование и контроль качества}
+
+\subsection{Стратегия тестирования}
+
+Проверка выполнялась в несколько циклов:
+\begin{enumerate}
+  \item \textbf{Unit-level} проверки серверных пакетов (\code{go test ./...}) и типовой корректности фронтенда (\code{tsc});
+  \item \textbf{Integration-level} smoke API сценариев: auth, feed, friends, map, articles, moderation;
+  \item ручной E2E-прогон мобильных пользовательских потоков;
+  \item ретест после исправлений;
+  \item техническая валидация сборки и линтеров.
+\end{enumerate}
+
+Отдельный акцент сделан на интеграционные проверки ролевой логики: доступ к moderation-операциям, удаление контента администратором и owner-only выдача прав.
+
+\subsection{Покрытые сценарии}
+
+\begin{table}[H]
+\centering
+\small
+\caption{Сценарии тестирования финального этапа}
+\begin{tabular}{|L{0.5\textwidth}|L{0.14\textwidth}|L{0.26\textwidth}|}
+\hline
+\textbf{Сценарий} & \textbf{Статус} & \textbf{Комментарий} \\
+\hline
+Регистрация, вход, восстановление сессии & PASS & Проверены валидные и ошибочные ветки \\
+\hline
+Лента: пост, фото, лайк, комментарий, сортировки & PASS & Подтверждены все режимы сортировки \\
+\hline
+Друзья: add by email/QR, remove & PASS & Проверены симметричные проверки дружбы \\
+\hline
+Умная карта: видимость друзей и DND & PASS & DND корректно скрывает пользователя \\
+\hline
+Карта мест (поиск POI через OpenStreetMap/Overpass) & PASS & Проверена выдача и серверный кэш повторных запросов \\
+\hline
+База знаний: submit + moderation & PASS & Добавлен отдельный admin-блок pending \\
+\hline
+Owner-only выдача admin прав & PASS/CONDITIONAL & Проверен guard, полный e2e зависит от owner-логина \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Найденные проблемы и исправления}
+
+Ключевые исправления по итогам тестирования:
+\begin{itemize}
+  \item устранены дубли backend/expo процессов, влияющие на непредсказуемость результата;
+  \item переработан UX соц-экрана для уменьшения визуального шума;
+  \item стабилизирован QR-сканер (защита от множественного срабатывания);
+  \item исправлена обработка admin-контекста при чтении статей;
+  \item настроена выдача мест через OpenStreetMap (Overpass) и кэширование повторных запросов на сервере;
+  \item улучшена согласованность подписей статусов на умной карте с выбранным режимом.
+\end{itemize}
+
+\subsection{Документирование тестов}
+
+Результаты по шагам зафиксированы в отдельном протоколе:
+\begin{center}
+\code{docs/ПРОТОКОЛ\_ТЕСТИРОВАНИЯ.md}
+\end{center}
+Это обеспечивает воспроизводимость QA-цикла и прозрачность ретестов.
+
+\section{Визуальная концепция и UX-решения}
+
+\subsection{Принципы UI}
+
+\begin{itemize}
+  \item \textbf{Иерархия:} заголовок $\rightarrow$ ключевые действия $\rightarrow$ контент.
+  \item \textbf{Контраст:} текст и управляющие элементы читаемы при любых условиях.
+  \item \textbf{Единообразие:} одинаковая логика кнопок и карточек на всех основных экранах.
+  \item \textbf{Обратная связь:} явные статусы операций (успех, ошибка, режим кэша и т.д.).
+\end{itemize}
+
+\subsection{Пример UX-изменений}
+
+\begin{enumerate}
+  \item Карта мест: индикатор загрузки без блокировки всего экрана, снижение частоты запросов при движении карты.
+  \item Энциклопедия: отдельный экран статьи; блок ожидающих модерации материалов для администратора.
+  \item Социальный экран: снижен визуальный шум, улучшена читаемость полей ввода на тёмном фоне.
+  \item Питомец и прогулки: единая тёмная тема; история прогулок и объявление о пропаже согласованы с картой.
+\end{enumerate}
+
+\subsection{Скриншоты приложения}
+
+\begin{figure}[H]
+\centering
+\IfFileExists{screens/map.png}{
+  \includegraphics[width=0.32\textwidth]{screens/map.png}
+}{
+  \fbox{\parbox[c][50mm][c]{0.30\textwidth}{\centering Скрин 1\\Карта мест}}
+}
+\hspace{4mm}
+\IfFileExists{screens/social.png}{
+  \includegraphics[width=0.32\textwidth]{screens/social.png}
+}{
+  \fbox{\parbox[c][50mm][c]{0.30\textwidth}{\centering Скрин 2\\Лента/друзья}}
+}
+\hspace{4mm}
+\IfFileExists{screens/pet.png}{
+  \includegraphics[width=0.32\textwidth]{screens/pet.png}
+}{
+  \fbox{\parbox[c][50mm][c]{0.30\textwidth}{\centering Скрин 3\\Карточка питомца}}
+}
+\caption{Ключевые экраны приложения DogPaw}
+\end{figure}
+
+
+\section{Риски и эксплуатация}
+
+\subsection{Оценка трудозатрат}
+
+Проект реализован итеративно в несколько этапов: архитектура, backend, frontend, интеграция, тестирование и документация. Основной вклад трудозатрат пришелся на:
+\begin{itemize}
+  \item проработку сквозных сценариев (auth $\leftrightarrow$ roles $\leftrightarrow$ content);
+  \item отладку сетевого окружения мобильной разработки;
+  \item синхронизацию контрактов API и экранной логики.
+\end{itemize}
+
+\subsection{Технические риски}
+
+\begin{table}[H]
+\centering
+\small
+\caption{Ключевые риски и меры снижения}
+\begin{tabular}{|L{0.36\textwidth}|L{0.26\textwidth}|L{0.28\textwidth}|}
+\hline
+\textbf{Риск} & \textbf{Вероятность/влияние} & \textbf{Митигирующие меры} \\
+\hline
+Сетевые проблемы мобильного запуска в LAN & Средняя/Высокое & Переход между LAN/Tunnel, фиксированные порты, проверка firewall \\
+\hline
+Ошибки в ролевой модели доступа & Средняя/Высокое & Централизация middleware, отдельные e2e-ветки на admin/owner \\
+\hline
+Зависимость от внешнего API мест & Высокая/Среднее & OSM/Overpass; кэш на сервере; таймауты на клиенте; учёт лимитов публичных инстансов \\
+\hline
+Рост сложности UI при добавлении функций & Средняя/Среднее & UX-ревью, сокращение визуального шума, унификация компонентов \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{План эксплуатации и развития}
+
+При переходе к production-уровню целесообразны:
+\begin{enumerate}
+  \item перенос БД на PostgreSQL;
+  \item выделенное файловое хранилище медиа;
+  \item централизованный логинг и мониторинг;
+  \item CI/CD с автотестами и проверками безопасности;
+  \item публикация мобильных сборок через EAS и сторах;
+  \item расширение медкарты питомца: история веса, план и журнал глистогонных и противоклещевых обработок;
+  \item геймификация прогулок: достижения (самая длинная прогулка, серия дней) и дружеские челленджи/рейтинги.
+\end{enumerate}
+
+
+\section{Заключение}
+
+В рамках финального этапа программного курсового проекта разработана и проверена интегрированная мобильная система DogPaw для владельцев собак. Проект прошел путь от прототипа до функционально связанного решения с авторизацией, социальной лентой, картографическим модулем, инструментами безопасности и модерацией пользовательского контента.
+
+Главный результат состоит не только в наличии отдельных функций, но и в согласованности архитектуры: backend-контракты, правила ролей, клиентские сценарии и UX-слой работают как единая система. Отдельно подтверждена способность проекта к дальнейшему росту: текущая модульная структура позволяет масштабировать платформу, не нарушая базовую логику предметной области.
+
+
+\begin{thebibliography}{99}
+
+\bibitem{statista_pet}
+Statista. Pet care market worldwide: statistics and trends, 2026. URL: \url{https://www.statista.com/topics/2849/pet-industry/}.
+
+\bibitem{reactnative_docs}
+React Native Documentation, 2026. URL: \url{https://reactnative.dev/docs/getting-started}.
+
+\bibitem{expo_docs}
+Expo Documentation, 2026. URL: \url{https://docs.expo.dev/}.
+
+\bibitem{gin_docs}
+Gin Web Framework Documentation, 2026. URL: \url{https://gin-gonic.com/docs/}.
+
+\bibitem{gorm_docs}
+GORM Documentation, 2026. URL: \url{https://gorm.io/docs/}.
+
+\bibitem{owasp_api}
+OWASP. API Security Top 10, 2023. URL: \url{https://owasp.org/API-Security/}.
+
+\bibitem{sus}
+Brooke J. SUS: A Quick and Dirty Usability Scale // Usability Evaluation in Industry. London: Taylor \& Francis, 1996.
+
+\bibitem{fielding}
+Fielding R. T. Architectural Styles and the Design of Network-based Software Architectures. Doctoral dissertation, University of California, Irvine, 2000.
+
+\bibitem{expo_eas}
+Expo. EAS Build and Submit Documentation, 2026. URL: \url{https://docs.expo.dev/build/introduction/}.
+
+\bibitem{petdesk}
+PetDesk. Official website, 2026. URL: \url{https://petdesk.com/}.
+
+\bibitem{rover}
+Rover. Official website, 2026. URL: \url{https://www.rover.com/}.
+
+\bibitem{strava}
+Strava. Official website, 2026. URL: \url{https://www.strava.com/}.
+
+\bibitem{bringfido}
+BringFido. Official website, 2026. URL: \url{https://www.bringfido.com/}.
+
+\bibitem{pawboost}
+PawBoost. Official website, 2026. URL: \url{https://www.pawboost.com/}.
+
+\end{thebibliography}
+
+\end{document}

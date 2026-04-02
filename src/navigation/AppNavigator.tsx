@@ -4,11 +4,11 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Text, View, StyleSheet } from 'react-native';
 
 import PetProfileScreen from '../screens/PetProfileScreen';
-import WalkTrackerScreen from '../screens/WalkTrackerScreen';
+import WalkStack from './WalkStack';
 import FeedingCalculatorScreen from '../screens/FeedingCalculatorScreen';
 import MapScreen from '../screens/MapScreen';
 import SocialScreen from '../screens/SocialScreen';
-import EncyclopediaScreen from '../screens/EncyclopediaScreen';
+import EncyclopediaStack from './EncyclopediaStack';
 import ProfileScreen from '../screens/ProfileScreen';
 
 const Tab = createBottomTabNavigator();
@@ -36,9 +36,9 @@ export default function AppNavigator() {
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: '#FF9F43',
-        tabBarInactiveTintColor: '#999',
-        tabBarStyle: { backgroundColor: '#fff', borderTopColor: '#eee' },
+        tabBarActiveTintColor: '#5b8cff',
+        tabBarInactiveTintColor: '#7f8aa0',
+        tabBarStyle: { backgroundColor: '#121722', borderTopColor: '#283247' },
         tabBarLabelStyle: { fontSize: 11 },
       }}
     >
@@ -52,7 +52,7 @@ export default function AppNavigator() {
       />
       <Tab.Screen
         name="Walks"
-        component={WalkTrackerScreen}
+        component={WalkStack}
         options={{
           tabBarLabel: 'Прогулки',
           tabBarIcon: () => <TabIcon icon="🚶" />,
@@ -84,7 +84,7 @@ export default function AppNavigator() {
       />
       <Tab.Screen
         name="Encyclopedia"
-        component={EncyclopediaScreen}
+        component={EncyclopediaStack}
         options={{
           tabBarLabel: 'Энциклопедия',
           tabBarIcon: () => <TabIcon icon="📚" />,

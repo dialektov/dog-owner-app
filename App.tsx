@@ -11,8 +11,8 @@ function RootContent() {
   const { user, loading } = useUser();
   if (loading) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator size="large" color="#FF9F43" />
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#10131b' }}>
+        <ActivityIndicator size="large" color="#2b84ff" />
       </View>
     );
   }
@@ -24,7 +24,7 @@ export default function App() {
     <SafeAreaProvider>
       <UserProvider>
         <NavigationContainer>
-          <StatusBar style="auto" />
+          <StatusBar style="light" />
           <RootContent />
         </NavigationContainer>
       </UserProvider>

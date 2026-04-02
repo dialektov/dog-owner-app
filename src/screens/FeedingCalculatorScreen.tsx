@@ -9,10 +9,13 @@ import {
   Switch,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { INPUT_PLACEHOLDER_COLOR } from '../theme/input';
 
 type ActivityLevel = 'low' | 'medium' | 'high';
 
 export default function FeedingCalculatorScreen() {
+  const insets = useSafeAreaInsets();
   const navigation = useNavigation<any>();
   const [weight, setWeight] = useState('25');
   const [age, setAge] = useState('3');
@@ -20,8 +23,6 @@ export default function FeedingCalculatorScreen() {
   const [reminderEnabled, setReminderEnabled] = useState(false);
   const [result, setResult] = useState<number | null>(null);
 
-  // Упрощённая формула: базовое кол-во * коэффициент активности
-  // Базовое ≈ 30-40 г на кг веса в день для взрослой собаки
   const calculate = () => {
     const w = parseFloat(weight) || 0;
     const a = parseInt(age, 10) || 0;
@@ -32,16 +33,17 @@ export default function FeedingCalculatorScreen() {
   };
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={[styles.content, { paddingTop: insets.top + 8, paddingBottom: insets.bottom + 32 }]}
+    >
       <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
         <Text style={styles.backBtnText}>← Назад</Text>
       </TouchableOpacity>
       <Text style={styles.title}>Калькулятор кормления</Text>
-      <Text style={styles.subtitle}>
-        Подскажет, сколько грамм корма в день нужно вашей собаке
-      </Text>
+      <Text style={styles.subtitle}>Сколько грамм корма в день нужно вашей собаке</Text>
 
-      <View style={styles.form}>
+      <View style={styles.card}>
         <Text style={styles.label}>Вес собаки (кг)</Text>
         <TextInput
           style={styles.input}
@@ -49,6 +51,7 @@ export default function FeedingCalculatorScreen() {
           onChangeText={setWeight}
           keyboardType="decimal-pad"
           placeholder="25"
+          placeholderTextColor={INPUT_PLACEHOLDER_COLOR}
         />
 
         <Text style={styles.label}>Возраст (лет)</Text>
@@ -58,6 +61,7 @@ export default function FeedingCalculatorScreen() {
           onChangeText={setAge}
           keyboardType="number-pad"
           placeholder="3"
+          placeholderTextColor={INPUT_PLACEHOLDER_COLOR}
         />
 
         <Text style={styles.label}>Уровень активности</Text>
@@ -81,8 +85,8 @@ export default function FeedingCalculatorScreen() {
 
         {result !== null && (
           <View style={styles.result}>
-            <Text style={styles.resultLabel}>Рекомендуемая норма в день:</Text>
-            <Text style={styles.resultValue}>{result} грамм корма</Text>
+            <Text style={styles.resultLabel}>Рекомендуемая норма в день</Text>
+            <Text style={styles.resultValue}>{result} г</Text>
           </View>
         )}
       </View>
@@ -92,8 +96,9 @@ export default function FeedingCalculatorScreen() {
         <Switch
           value={reminderEnabled}
           onValueChange={setReminderEnabled}
-          trackColor={{ false: '#ddd', true: '#FF9F43' }}
-          thumbColor="#fff"
+          trackColor={{ false: '#2d3548', true: '#5b46ff' }}
+          thumbColor={reminderEnabled ? '#e8e4ff' : '#8892a8'}
+          ios_backgroundColor="#2d3548"
         />
       </View>
     </ScrollView>
@@ -101,25 +106,71 @@ export default function FeedingCalculatorScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f8f9fa' },
-  content: { padding: 20, paddingBottom: 40 },
-  backBtn: { marginBottom: 16 },
-  backBtnText: { fontSize: 16, color: '#FF9F43', fontWeight: '600' },
-  title: { fontSize: 24, fontWeight: '700', color: '#333', marginBottom: 4 },
-  subtitle: { fontSize: 14, color: '#666', marginBottom: 24 },
-  form: { backgroundColor: '#fff', borderRadius: 12, padding: 20, marginBottom: 20, shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 4, elevation: 2 },
-  label: { fontSize: 14, color: '#666', marginBottom: 8 },
-  input: { borderWidth: 1, borderColor: '#ddd', borderRadius: 8, padding: 12, fontSize: 16, marginBottom: 16 },
-  activityRow: { flexDirection: 'row', gap: 8, marginBottom: 20 },
-  activityBtn: { flex: 1, padding: 12, borderRadius: 8, backgroundColor: '#f0f0f0', alignItems: 'center' },
-  activityBtnActive: { backgroundColor: '#FF9F43' },
-  activityText: { fontSize: 12, color: '#666' },
-  activityTextActive: { color: '#fff', fontWeight: '600' },
-  calcBtn: { backgroundColor: '#FF9F43', padding: 16, borderRadius: 12, alignItems: 'center' },
-  calcBtnText: { color: '#fff', fontSize: 16, fontWeight: '600' },
-  result: { marginTop: 20, padding: 16, backgroundColor: '#e8f5e9', borderRadius: 8 },
-  resultLabel: { fontSize: 14, color: '#666', marginBottom: 4 },
-  resultValue: { fontSize: 20, fontWeight: '700', color: '#2e7d32' },
-  reminder: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#fff', padding: 16, borderRadius: 12, shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 4, elevation: 2 },
-  reminderLabel: { fontSize: 16, fontWeight: '500', color: '#333' },
+  container: { flex: 1, backgroundColor: '#10131b' },
+  content: { paddingHorizontal: 20 },
+  backBtn: { marginBottom: 12, alignSelf: 'flex-start' },
+  backBtnText: { fontSize: 16, color: '#6ac2ff', fontWeight: '600' },
+  title: { fontSize: 24, fontWeight: '700', color: '#edf2fb', marginBottom: 6 },
+  subtitle: { fontSize: 14, color: '#aab4c8', marginBottom: 22, lineHeight: 20 },
+  card: {
+    backgroundColor: '#171c29',
+    borderRadius: 14,
+    padding: 18,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: '#2d3548',
+  },
+  label: { fontSize: 13, color: '#9aa6bc', marginBottom: 8, fontWeight: '600' },
+  input: {
+    borderWidth: 1,
+    borderColor: '#2d3548',
+    borderRadius: 10,
+    padding: 14,
+    fontSize: 16,
+    marginBottom: 16,
+    backgroundColor: '#1f2637',
+    color: '#eaf0ff',
+  },
+  activityRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 20 },
+  activityBtn: {
+    flex: 1,
+    minWidth: '28%',
+    paddingVertical: 12,
+    borderRadius: 10,
+    backgroundColor: '#252d40',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#3a455c',
+  },
+  activityBtnActive: { backgroundColor: '#2b84ff', borderColor: '#2b84ff' },
+  activityText: { fontSize: 12, color: '#aeb8ca' },
+  activityTextActive: { color: '#fff', fontWeight: '700' },
+  calcBtn: {
+    backgroundColor: '#7b3fe4',
+    paddingVertical: 16,
+    borderRadius: 12,
+    alignItems: 'center',
+  },
+  calcBtnText: { color: '#fff', fontSize: 16, fontWeight: '700' },
+  result: {
+    marginTop: 18,
+    padding: 16,
+    backgroundColor: '#1a2338',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#2b84ff',
+  },
+  resultLabel: { fontSize: 13, color: '#9dc3ff', marginBottom: 6 },
+  resultValue: { fontSize: 22, fontWeight: '800', color: '#eaf2ff' },
+  reminder: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: '#171c29',
+    padding: 16,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: '#2d3548',
+  },
+  reminderLabel: { fontSize: 15, fontWeight: '600', color: '#dce4f5', flex: 1, marginRight: 12 },
 });

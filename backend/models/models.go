@@ -12,6 +12,7 @@ type User struct {
 	Email        string         `gorm:"uniqueIndex" json:"email"`
 	Name         string         `json:"name"`
 	PasswordHash string         `json:"-" gorm:"column:password_hash"`
+	IsAdmin      bool           `gorm:"index" json:"is_admin"`
 	Avatar       string         `json:"avatar,omitempty"`
 	CreatedAt    time.Time      `json:"created_at"`
 	UpdatedAt    time.Time      `json:"updated_at"`
@@ -25,6 +26,7 @@ type Pet struct {
 	OwnerID      string    `gorm:"index" json:"owner_id"`
 	Name         string    `json:"name"`
 	Breed        string    `json:"breed"`
+	BirthDate    string    `json:"birth_date,omitempty"` // YYYY-MM-DD
 	Age          int       `json:"age"`
 	Weight       float64   `json:"weight"`
 	Photos       string    `json:"photos"` // JSON array of URLs
@@ -115,11 +117,29 @@ type FeedPost struct {
 }
 
 type Article struct {
+	ID          string    `gorm:"primaryKey" json:"id"`
+	Title       string    `json:"title"`
+	Content     string    `json:"content"`
+	Category    string    `gorm:"index" json:"category"`
+	Author      string    `json:"author"`
+	Status      string    `gorm:"index" json:"status"` // pending, published, rejected
+	SubmittedBy string    `gorm:"index" json:"submitted_by"`
+	ApprovedBy  string    `gorm:"index" json:"approved_by"`
+	CreatedAt   time.Time `json:"created_at"`
+}
+
+type FeedLike struct {
 	ID        string    `gorm:"primaryKey" json:"id"`
-	Title     string    `json:"title"`
-	Content   string    `json:"content"`
-	Category  string    `gorm:"index" json:"category"`
-	Author    string    `json:"author"`
+	PostID    string    `gorm:"index" json:"post_id"`
+	UserID    string    `gorm:"index" json:"user_id"`
+	CreatedAt time.Time `json:"created_at"`
+}
+
+type FeedComment struct {
+	ID        string    `gorm:"primaryKey" json:"id"`
+	PostID    string    `gorm:"index" json:"post_id"`
+	UserID    string    `gorm:"index" json:"user_id"`
+	Text      string    `json:"text"`
 	CreatedAt time.Time `json:"created_at"`
 }
 
@@ -200,6 +220,23 @@ func (fp *FeedPost) BeforeCreate(tx *gorm.DB) error {
 func (a *Article) BeforeCreate(tx *gorm.DB) error {
 	if a.ID == "" {
 		a.ID = uuid.New().String()
+	}
+	if a.Status == "" {
+		a.Status = "pending"
+	}
+	return nil
+}
+
+func (fl *FeedLike) BeforeCreate(tx *gorm.DB) error {
+	if fl.ID == "" {
+		fl.ID = uuid.New().String()
+	}
+	return nil
+}
+
+func (fc *FeedComment) BeforeCreate(tx *gorm.DB) error {
+	if fc.ID == "" {
+		fc.ID = uuid.New().String()
 	}
 	return nil
 }

@@ -21,6 +21,8 @@ func Setup(cfg *config.Config) *gin.Engine {
 		// Auth
 		api.POST("/auth/register", handlers.Register)
 		api.POST("/auth/login", handlers.Login)
+		api.GET("/auth/me", authMiddleware(), handlers.Me)
+		api.POST("/auth/grant-admin", authMiddleware(), handlers.GrantAdmin)
 
 		// Users
 		api.GET("/users/:id", handlers.GetUser)
@@ -35,6 +37,7 @@ func Setup(cfg *config.Config) *gin.Engine {
 		// Walks
 		api.GET("/pets/:id/walks", handlers.GetWalks)
 		api.POST("/walks", handlers.CreateWalk)
+		api.DELETE("/walks/:id", authMiddleware(), handlers.DeleteWalk)
 
 		// Places
 		api.GET("/places", handlers.GetPlaces)
@@ -44,28 +47,33 @@ func Setup(cfg *config.Config) *gin.Engine {
 		api.POST("/places/:id/reviews", handlers.CreateReview)
 
 		// Smart map - user locations
-		api.GET("/map/users", handlers.GetUserLocations)
+		api.GET("/map/users", authMiddleware(), handlers.GetUserLocations)
 		api.PUT("/map/me", authMiddleware(), handlers.UpdateMyLocation)
 
 		// Friends
-		api.GET("/users/:id/friends", handlers.GetFriends)
+		api.GET("/users/:id/friends", authMiddleware(), handlers.GetFriends)
 		api.POST("/friends", authMiddleware(), handlers.AddFriend)
+		api.DELETE("/friends/:id", authMiddleware(), handlers.RemoveFriend)
 
 		// Feed
 		api.GET("/feed", handlers.GetFeed)
 		api.POST("/feed", authMiddleware(), handlers.CreateFeedPost)
+		api.POST("/feed/:id/like", authMiddleware(), handlers.ToggleFeedLike)
+		api.POST("/feed/:id/comments", authMiddleware(), handlers.AddFeedComment)
+		api.DELETE("/feed/:id", authMiddleware(), handlers.DeleteFeedPost)
 
 		// Encyclopedia
-		api.GET("/articles", handlers.GetArticles)
-		api.GET("/articles/:id", handlers.GetArticle)
+		api.GET("/articles", optionalAuthMiddleware(), handlers.GetArticles)
+		api.GET("/articles/:id", optionalAuthMiddleware(), handlers.GetArticle)
+		api.POST("/articles/submit", authMiddleware(), handlers.SubmitArticle)
+		api.PUT("/articles/:id/moderate", authMiddleware(), handlers.ModerateArticle)
+		api.DELETE("/articles/:id", authMiddleware(), handlers.DeleteArticle)
 
 		// Lost & Found
 		api.GET("/lost", handlers.GetLostAlerts)
 		api.POST("/lost", authMiddleware(), handlers.CreateLostAlert)
 		api.PUT("/lost/:id/found", authMiddleware(), handlers.MarkLostAlertFound)
 
-		// Session
-		api.GET("/auth/me", authMiddleware(), handlers.Me)
 	}
 
 	r.GET("/health", func(c *gin.Context) {

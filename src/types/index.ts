@@ -3,6 +3,7 @@ export interface Pet {
   id: string;
   name: string;
   breed: string;
+  birthDate?: string; // YYYY-MM-DD
   age: number; // в годах
   weight: number; // в кг
   photos: string[];
@@ -31,6 +32,18 @@ export interface Walk {
   duration: number; // минуты
   calories: number;
   route: { latitude: number; longitude: number }[];
+}
+
+/** Ответ API списка/создания прогулки */
+export interface WalkRecord {
+  id: string;
+  pet_id?: string;
+  distance: number;
+  duration: number;
+  calories: number;
+  started_at: string;
+  ended_at: string;
+  route?: string;
 }
 
 // Место на карте
